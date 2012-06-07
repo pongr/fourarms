@@ -25,7 +25,7 @@ trait ElementsFromLookup { this: Matcher =>
 
 class RecipientIsInLookup extends GenericRecipientMatcher with ElementsFromLookup {
 
-  override def matchRecipient(recipient: MailAddress): Boolean = 
+  override def matchRecipient(recipient: MailAddress): Boolean =
     elements contains recipient.getLocalPart.trim.toLowerCase
 
 }
