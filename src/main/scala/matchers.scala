@@ -20,6 +20,7 @@ trait EmailsFromRepo { this: Matcher =>
     Class.forName(repoClassName).newInstance.asInstanceOf[Repo]
 
   def emails = repoInstance.emails
+
 }
 
 class RecipientIsInRepo extends GenericRecipientMatcher with EmailsFromRepo {
@@ -29,9 +30,10 @@ class RecipientIsInRepo extends GenericRecipientMatcher with EmailsFromRepo {
 
 }
 
-/** Matches if sender is in the file specified in the condition. Usage would be like:
- * <mailet match="SenderIsInFile=SimpleDbRepo" class="ToProcessor">
- */
+/*
+  Matches if sender is in the file specified in the condition. Usage would be like:
+  <mailet match="SenderIsInFile=SimpleDbRepo" class="ToProcessor">
+*/
 class SenderIsInRepo extends GenericMatcher with FromMethods with EmailsFromRepo {
 
   override def `match`(mail: Mail): JCollection[_] = {
@@ -47,5 +49,12 @@ class SenderIsInRepo extends GenericMatcher with FromMethods with EmailsFromRepo
       ""
     else
       addr.getLocalPart.trim.toLowerCase + "@" + addr.getDomain.trim.toLowerCase
+
+}
+
+class DomainIsInRepo extends GenericRecipientMatcher with EmailsFromRepo {
+
+  override def matchRecipient(recipient: MailAddress): Boolean =
+    emails contains recipient.getLocalPart.trim.toLowerCase
 
 }
