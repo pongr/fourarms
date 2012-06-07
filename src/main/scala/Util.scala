@@ -29,9 +29,9 @@ trait FromMethods {
     case _ => None
   }
 
-  //From: "Hottinger, Brad" <Hottinger.Brad@principal.com>
-  //From: "Jamie Thompson" <jthompson@pongr.com>
-  //From: Isabella Tesler <itesler@pongr.com>
+  //From: "First, Last" <First.Last@host.com>
+  //From: "First Last" <email@host.com>
+  //From: First Last <email@host.com>
   //Last, First
   //First Last
   //First
@@ -41,7 +41,7 @@ trait FromMethods {
     case Some(address) if !isBlank(address.getPersonal) => address.getPersonal.replaceAll("\"", "").trim.toLowerCase match {
       case LastFirst(last, first) => Some((first.capitalize, last.capitalize))
       case FirstLast(first, last) => Some((first.capitalize, last.capitalize))
-      //Sprint MMS From header is like: "zacherycox02@pm.sprint.com" <zacherycox02@pm.sprint.com>, we absolutely cannot display full email addresses!
+      // Sprint MMS From header is like: "username@pm.sprint.com" <username@pm.sprint.com>
       case s: String if s contains "@" => None
       case name: String => Some((name.capitalize, "X"))
     }

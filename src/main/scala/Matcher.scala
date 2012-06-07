@@ -20,7 +20,7 @@ class RecipientIsInRepo extends GenericRecipientMatcher {
 }
 
 /** Matches if sender is in the file specified in the condition. Usage would be like:
- * <mailet match="SenderIsInFile=/etc/james/spammers" class="ToProcessor">
+ * <mailet match="SenderIsInFile=something" class="ToProcessor">
  */
 class SenderIsInRepo extends GenericMatcher with FromMethods {
   override def `match`(mail: Mail): JCollection[_] = {

@@ -1,5 +1,7 @@
 *.class
 *.log
+# vim swap files
+*.swp
 
 # sbt specific
 dist/*
