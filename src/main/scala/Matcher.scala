@@ -8,25 +8,35 @@ import java.util.{Collection => JCollection}
 
 import com.pongr.fourarms.util.FromMethods
 
-class RecipientIsInRepo extends GenericRecipientMatcher {
+trait Repo {
+  def emails: List[String]
+}
 
-  def repo = getMatcherConfig.getCondition
+trait EmailsFromRepo { this: Matcher => 
 
-  override def matchRecipient(recipient: MailAddress): Boolean = {
-    val email = recipient.getLocalPart.trim.toLowerCase
-    println(email)
-    true
-  }
+  def repoClassName = getMatcherConfig.getCondition
+
+  def createRepoInstance: Repo = 
+    Class.forName(repoClassName).newInstance.asInstanceOf[Repo]
+
+  def emails = createRepoInstance.emails
+}
+
+
+class RecipientIsInRepo extends GenericRecipientMatcher with EmailsFromRepo {
+
+  override def matchRecipient(recipient: MailAddress): Boolean = 
+    emails contains recipient.getLocalPart.trim.toLowerCase
+
 }
 
 /** Matches if sender is in the file specified in the condition. Usage would be like:
- * <mailet match="SenderIsInFile=something" class="ToProcessor">
+ * <mailet match="SenderIsInFile=SimpleDbRepo" class="ToProcessor">
  */
-class SenderIsInRepo extends GenericMatcher with FromMethods {
+class SenderIsInRepo extends GenericMatcher with FromMethods with EmailsFromRepo {
   override def `match`(mail: Mail): JCollection[_] = {
-    //val sender = toString(mail.getSender)
     val sender = getFromEmail(mail)
-    val es = Nil
+    val es = emails
     log("Testing if sender %s is contained in reject list %s".format(sender, es))
     if (es contains sender) {
       log("Rejecting because sender is %s".format(sender))
@@ -34,5 +44,10 @@ class SenderIsInRepo extends GenericMatcher with FromMethods {
     } else 
       Nil
   }
-  def toString(a: MailAddress) = if (a == null) "" else (a.getLocalPart.trim.toLowerCase + "@" + a.getDomain.trim.toLowerCase)
+
+  def toString(a: MailAddress) = 
+    if (a == null) 
+      "" 
+    else 
+      a.getLocalPart.trim.toLowerCase + "@" + a.getDomain.trim.toLowerCase
 }
