@@ -1,5 +1,7 @@
 name := "fourarms"
 
+organization := "com.pongr"
+
 version := "0.1-SNAPSHOT"
 
 scalaVersion := "2.9.1"
@@ -10,7 +12,7 @@ resolvers ++= Seq(
 
 
 libraryDependencies ++= Seq(
-  "org.scala-tools.testing" %% "specs" % "1.6.9" % "test",
+  "org.specs2" %% "specs2" % "1.11" % "test",
   "org.apache.james" % "apache-mailet-base" % "1.0",
   "commons-lang" % "commons-lang" % "2.5"
 )

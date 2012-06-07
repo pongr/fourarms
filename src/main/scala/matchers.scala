@@ -8,7 +8,7 @@ import java.util.{Collection => JCollection}
 import com.pongr.fourarms.util.FromMethods
 
 trait Lookup {
-  def elements: List[String]
+  def exist_?(element: String): Boolean
 }
 
 trait ElementsFromLookup { this: Matcher => 
@@ -19,14 +19,14 @@ trait ElementsFromLookup { this: Matcher =>
   lazy val lookupInstance: Lookup = 
     Class.forName(lookupClassName).newInstance.asInstanceOf[Lookup]
 
-  def elements = lookupInstance.elements
+  def exist_?(e: String) = lookupInstance.exist_?(e)
 
 }
 
 class RecipientIsInLookup extends GenericRecipientMatcher with ElementsFromLookup {
 
   override def matchRecipient(recipient: MailAddress): Boolean =
-    elements contains recipient.getLocalPart.trim.toLowerCase
+    exist_?(recipient.getLocalPart.trim.toLowerCase)
 
 }
 
@@ -38,7 +38,7 @@ class SenderIsInLookup extends GenericMatcher with FromMethods with ElementsFrom
 
   override def `match`(mail: Mail): JCollection[_] = {
     val sender = getFromEmail(mail)
-    if (elements contains sender)
+    if (exist_?(sender))
       mail.getRecipients
     else
       Nil
@@ -52,8 +52,14 @@ class SenderIsInLookup extends GenericMatcher with FromMethods with ElementsFrom
 
 }
 
-class DomainIsInLookup extends GenericMatcher with ElementsFromLookup {
+class DomainIsInLookup extends GenericMatcher with FromMethods with ElementsFromLookup {
 
-  override def `match`(mail: Mail): JCollection[_] = Nil
+  override def `match`(mail: Mail): JCollection[_] = {
+    val domain = getDomain(mail)
+    if (exist_?(domain))
+      mail.getRecipients
+    else
+      Nil
+  }
 
 }

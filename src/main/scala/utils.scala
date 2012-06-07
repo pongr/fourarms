@@ -10,16 +10,19 @@ trait FromMethods {
   def defaultLastName = "X"
 
   def getFrom(mail: Mail): (String, Option[(String, String)]) = {
-    var from = getFromEmail(mail)
-    var fromName = getFromName(mail)
+    val from = getFromEmail(mail)
+    val fromName = getFromName(mail)
 
     // For some Sprint users we get From: 123-456-7890 <donotreply@pm.sprint.com>
     // Sprint SMS email addresses are like 1234567890@messaging.sprintpcs.com
     if ("donotreply@pm.sprint.com" == from) {
-      from = fromName map { case (first, last) => first.replaceAll("\\D", "") + "@messaging.sprintpcs.com" } getOrElse ""
-      fromName = None
+      val tmpFrom = fromName map { case (first, last) => 
+                      first.replaceAll("\\D", "") + "@messaging.sprintpcs.com" 
+                    } getOrElse ""
+      (tmpFrom, None)
     }
-    (from, fromName)
+    else 
+      (from, fromName)
   }
   
   def getFromEmail(mail: Mail): String = getFromAddress(mail) match {
@@ -30,6 +33,13 @@ trait FromMethods {
   def getFromAddress(mail: Mail): Option[InternetAddress] = mail.getMessage.getFrom match {
     case a: Array[Address] if !a.isEmpty => Some(a(0).asInstanceOf[InternetAddress])
     case _ => None
+  }
+
+  def getDomain(mail: Mail): String = getFromAddress(mail) match {
+    case Some(addr) => 
+      val a = addr.getAddress
+      a.substring(a.indexOf("@") + 1, a.length)
+    case _ => ""
   }
 
   //From: "First, Last" <First.Last@host.com>
