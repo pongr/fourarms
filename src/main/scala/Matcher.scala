@@ -2,7 +2,6 @@ package com.pongr.fourarms.matcher
 
 import org.apache.mailet._
 import org.apache.mailet.base._
-import scala.io._
 import scala.collection.JavaConversions._
 import java.util.{Collection => JCollection}
 
@@ -22,7 +21,6 @@ trait EmailsFromRepo { this: Matcher =>
 
   def emails = repoInstance.emails
 }
-
 
 class RecipientIsInRepo extends GenericRecipientMatcher with EmailsFromRepo {
 
