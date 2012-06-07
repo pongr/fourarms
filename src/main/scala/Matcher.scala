@@ -14,12 +14,13 @@ trait Repo {
 
 trait EmailsFromRepo { this: Matcher => 
 
-  def repoClassName = getMatcherConfig.getCondition
+  val repoClassName = getMatcherConfig.getCondition
 
-  def createRepoInstance: Repo = 
+  // Creating an instance of the email repository
+  lazy val repoInstance: Repo = 
     Class.forName(repoClassName).newInstance.asInstanceOf[Repo]
 
-  def emails = createRepoInstance.emails
+  def emails = repoInstance.emails
 }
 
 
@@ -36,10 +37,8 @@ class RecipientIsInRepo extends GenericRecipientMatcher with EmailsFromRepo {
 class SenderIsInRepo extends GenericMatcher with FromMethods with EmailsFromRepo {
   override def `match`(mail: Mail): JCollection[_] = {
     val sender = getFromEmail(mail)
-    val es = emails
-    log("Testing if sender %s is contained in reject list %s".format(sender, es))
-    if (es contains sender) {
-      log("Rejecting because sender is %s".format(sender))
+    log("Testing if sender %s is contained in the repo %s".format(sender, emails))
+    if (emails contains sender) {
       mail.getRecipients
     } else 
       Nil
