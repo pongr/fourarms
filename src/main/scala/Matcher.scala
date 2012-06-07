@@ -35,18 +35,20 @@ class RecipientIsInRepo extends GenericRecipientMatcher with EmailsFromRepo {
  * <mailet match="SenderIsInFile=SimpleDbRepo" class="ToProcessor">
  */
 class SenderIsInRepo extends GenericMatcher with FromMethods with EmailsFromRepo {
+
   override def `match`(mail: Mail): JCollection[_] = {
     val sender = getFromEmail(mail)
     log("Testing if sender %s is contained in the repo %s".format(sender, emails))
     if (emails contains sender) {
       mail.getRecipients
-    } else 
+    } else
       Nil
   }
 
-  def toString(a: MailAddress) = 
-    if (a == null) 
-      "" 
-    else 
-      a.getLocalPart.trim.toLowerCase + "@" + a.getDomain.trim.toLowerCase
+  def toString(addr: MailAddress) =
+    if (addr == null)
+      ""
+    else
+      addr.getLocalPart.trim.toLowerCase + "@" + addr.getDomain.trim.toLowerCase
+
 }
