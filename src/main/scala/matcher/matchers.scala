@@ -13,11 +13,13 @@ trait Lookup {
 
 trait ElementsFromLookup { this: Matcher => 
 
-  val lookupClassName = getMatcherConfig.getCondition
+  val condition = getMatcherConfig.getCondition
+  val lookupClassName = condition.split(",").head
 
-  // Creating an instance of the email lookup 
-  lazy val lookupInstance: Lookup = 
-    Class.forName(lookupClassName).newInstance.asInstanceOf[Lookup]
+  // Creating an instance of the email lookup
+  lazy val lookupInstance: Lookup = Class.forName(lookupClassName)
+                                         .getDeclaredConstructor(classOf[String])
+                                         .newInstance(condition).asInstanceOf[Lookup]
 
   def exist_?(e: String) = lookupInstance.exist_?(e)
 
