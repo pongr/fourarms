@@ -7,38 +7,38 @@ import java.util.{Collection => JCollection}
 
 import com.pongr.fourarms.util.FromMethods
 
-trait Repo {
-  def emails: List[String]
+trait Lookup {
+  def elements: List[String]
 }
 
-trait EmailsFromRepo { this: Matcher => 
+trait ElementsFromLookup { this: Matcher => 
 
-  val repoClassName = getMatcherConfig.getCondition
+  val lookupClassName = getMatcherConfig.getCondition
 
-  // Creating an instance of the email repository
-  lazy val repoInstance: Repo = 
-    Class.forName(repoClassName).newInstance.asInstanceOf[Repo]
+  // Creating an instance of the email lookup 
+  lazy val lookupInstance: Lookup = 
+    Class.forName(lookupClassName).newInstance.asInstanceOf[Lookup]
 
-  def emails = repoInstance.emails
+  def elements = lookupInstance.elements
 
 }
 
-class RecipientIsInRepo extends GenericRecipientMatcher with EmailsFromRepo {
+class RecipientIsInLookup extends GenericRecipientMatcher with ElementsFromLookup {
 
   override def matchRecipient(recipient: MailAddress): Boolean = 
-    emails contains recipient.getLocalPart.trim.toLowerCase
+    elements contains recipient.getLocalPart.trim.toLowerCase
 
 }
 
 /*
   Matches if sender is in the file specified in the condition. Usage would be like:
-  <mailet match="SenderIsInFile=SimpleDbRepo" class="ToProcessor">
+  <mailet match="SenderIsInFile=SimpleDbLookup" class="ToProcessor">
 */
-class SenderIsInRepo extends GenericMatcher with FromMethods with EmailsFromRepo {
+class SenderIsInLookup extends GenericMatcher with FromMethods with ElementsFromLookup {
 
   override def `match`(mail: Mail): JCollection[_] = {
     val sender = getFromEmail(mail)
-    if (emails contains sender)
+    if (elements contains sender)
       mail.getRecipients
     else
       Nil
@@ -52,9 +52,8 @@ class SenderIsInRepo extends GenericMatcher with FromMethods with EmailsFromRepo
 
 }
 
-class DomainIsInRepo extends GenericRecipientMatcher with EmailsFromRepo {
+class DomainIsInLookup extends GenericMatcher with ElementsFromLookup {
 
-  override def matchRecipient(recipient: MailAddress): Boolean =
-    emails contains recipient.getLocalPart.trim.toLowerCase
+  override def `match`(mail: Mail): JCollection[_] = Nil
 
 }
