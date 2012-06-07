@@ -36,10 +36,9 @@ class SenderIsInRepo extends GenericMatcher with FromMethods with EmailsFromRepo
 
   override def `match`(mail: Mail): JCollection[_] = {
     val sender = getFromEmail(mail)
-    log("Testing if sender %s is contained in the repo %s".format(sender, emails))
-    if (emails contains sender) {
+    if (emails contains sender)
       mail.getRecipients
-    } else
+    else
       Nil
   }
 
