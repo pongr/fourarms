@@ -14,5 +14,6 @@ resolvers ++= Seq(
 libraryDependencies ++= Seq(
   "org.specs2" %% "specs2" % "1.11" % "test",
   "org.apache.james" % "apache-mailet-base" % "1.0",
-  "commons-lang" % "commons-lang" % "2.5"
+  "commons-lang" % "commons-lang" % "2.5",
+  "com.amazonaws" % "aws-java-sdk" % "1.3.10"
 )
