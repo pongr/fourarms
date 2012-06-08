@@ -4,7 +4,13 @@ class RejectLookup(condition: String) extends Lookup {
 
   val emails = List("spammer@test.com", "spam@test.com", "nogood@test.com")
 
-  def exist_?(e: String) = emails contains e
+  def exist_?(e: String) = {
+    println("---------------------------------------------------")
+    println(e)
+    println(emails)
+    println("---------------------------------------------------")
+    emails contains e
+  }
 
 }
 
