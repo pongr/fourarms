@@ -34,7 +34,7 @@ class RecipientIsInLookup extends GenericRecipientMatcher with ElementsFromLooku
 
 /*
   Matches if sender is in the file specified in the condition. Usage would be like:
-  <mailet match="SenderIsInFile=org.domain.SimpleDbLookup" class="ToProcessor">
+  <mailet match="SenderIsInFile=com.pongr.fouramrs.matcher.SimpleDbLookup, com.domain.AwsCred" class="ToProcessor">
 */
 class SenderIsInLookup extends GenericMatcher with FromMethods with ElementsFromLookup {
 
