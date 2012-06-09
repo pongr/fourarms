@@ -46,12 +46,6 @@ class SenderIsInLookup extends GenericMatcher with FromMethods with ElementsFrom
       Nil
   }
 
-  def toString(addr: MailAddress) =
-    if (addr == null)
-      ""
-    else
-      addr.getLocalPart.trim.toLowerCase + "@" + addr.getDomain.trim.toLowerCase
-
 }
 
 class DomainIsInLookup extends GenericMatcher with FromMethods with ElementsFromLookup {

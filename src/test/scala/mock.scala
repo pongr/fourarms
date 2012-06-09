@@ -7,17 +7,23 @@ import org.apache.mailet.base._
 
 trait Mocks extends Mockito {
 
-  val addr = mock[MailAddress]
-  addr.toString returns "spammer@test.com"
-  addr.getLocalPart returns "spammer@test.com"
+  val spamEmailAddress = "spammer@test.com"
+  val relayEmail = "important@test.com"
 
-  val mail = mock[Mail]
-  mail.getSender returns addr
+  val spammerAddr = mock[MailAddress]
+  spammerAddr.toString returns spamEmailAddress
+  spammerAddr.getLocalPart returns spamEmailAddress
 
-  val matcherConfig = mock[MatcherConfig]
-  matcherConfig.getCondition returns "com.pongr.fourarms.matcher.RejectLookup"
+  val relayAddr = mock[MailAddress]
+  relayAddr.toString returns relayEmail
+  relayAddr.getLocalPart returns relayEmail
 
-  val recipientIsInLookup = mock[RecipientIsInLookup]
-  recipientIsInLookup.getMatcherConfig returns matcherConfig
+  val spamMail = mock[Mail]
+  spamMail.getSender returns spammerAddr
+
+  val rejectMatcherCfg = mock[MatcherConfig]
+  rejectMatcherCfg.getCondition returns "com.pongr.fourarms.matcher.InmemoryRejectLookup"
+
+  val relayMatcherCfg = mock[MatcherConfig]
+  relayMatcherCfg.getCondition returns "com.pongr.fourarms.matcher.InmemoryRelayLookup"
 }
-
