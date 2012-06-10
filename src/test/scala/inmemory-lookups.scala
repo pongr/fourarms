@@ -19,7 +19,7 @@ class InmemoryRelayLookup(condition: String) extends Lookup {
 
 class InmemoryRejectDomainLookup(condition: String) extends Lookup {
 
-  val domains = List("test.com", "tom.com")
+  val domains = List("wearespammer.com", "tom.com")
 
   def exist_?(e: String) = domains contains e
 

@@ -9,6 +9,8 @@ trait Mocks extends Mockito {
 
   val spamEmailAddress = "spammer@test.com"
   val relayEmail = "important@test.com"
+  val spamDomain = "wearespammer.com"
+  val goodDomain = "pongr.com"
 
   val spammerAddr = mock[MailAddress]
   spammerAddr.toString returns spamEmailAddress
@@ -26,4 +28,8 @@ trait Mocks extends Mockito {
 
   val relayMatcherCfg = mock[MatcherConfig]
   relayMatcherCfg.getCondition returns "com.pongr.fourarms.matcher.InmemoryRelayLookup"
+
+  val rejectDomainMatcherCfg = mock[MatcherConfig]
+  rejectDomainMatcherCfg.getCondition returns "com.pongr.fourarms.matcher.InmemoryRejectDomainLookup"
+
 }
