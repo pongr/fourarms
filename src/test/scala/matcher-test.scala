@@ -10,7 +10,9 @@ class MatcherSpec extends Specification with Mocks {
       // Need to use spy since we're testing on a real method
       val m = spy(new SenderIsInLookup)
       m.getMatcherConfig returns rejectMatcherCfg
+
       m.exist_?(spamEmailAddress) must_== true
+
       m.exist_?(relayEmail) must_== false
     }
 

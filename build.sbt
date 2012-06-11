@@ -12,9 +12,10 @@ resolvers ++= Seq(
 
 
 libraryDependencies ++= Seq(
-  "org.specs2" %% "specs2" % "1.11" % "test",
-  "org.mockito" % "mockito-all" % "1.9.0" % "test",
+  "org.specs2" %% "specs2" % "1.11",
+  "org.mockito" % "mockito-all" % "1.9.0",
   "org.apache.james" % "apache-mailet-base" % "1.0",
   "commons-lang" % "commons-lang" % "2.5",
-  "com.amazonaws" % "aws-java-sdk" % "1.3.10"
+  "com.amazonaws" % "aws-java-sdk" % "1.3.10",
+  "com.rabbitmq" % "rabbitmq-client" % "1.3.0"
 )
