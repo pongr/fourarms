@@ -17,5 +17,5 @@ libraryDependencies ++= Seq(
   "org.apache.james" % "apache-mailet-base" % "1.0",
   "commons-lang" % "commons-lang" % "2.5",
   "com.amazonaws" % "aws-java-sdk" % "1.3.10",
-  "com.rabbitmq" % "rabbitmq-client" % "1.3.0"
+  "com.rabbitmq" % "amqp-client" % "2.8.2"
 )
