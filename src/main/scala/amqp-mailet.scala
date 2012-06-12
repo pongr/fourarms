@@ -4,7 +4,7 @@ import org.apache.mailet._
 import org.apache.mailet.base._
 import com.rabbitmq.client._
 
-import com.pongr.fourarms.serializer.Serializer
+import com.pongr.fourarms.serializer._
 
 class AmqpMailet extends GenericMailet {
 
@@ -16,10 +16,16 @@ class AmqpMailet extends GenericMailet {
     val username = getInitParameter("username")
     val password = getInitParameter("password")
     val vhost = getInitParameter("vhost")
+    val exchange = getInitParameter("exchange")
+    val queue = getInitParameter("queue")
+    val key = getInitParameter("key")
+    val protocol = getInitParameter("protocol")
 
     val uri = "amqp://%s:%s@%s:%s/%s" format (username, password, host, port, vhost)
-    val serializer = Class.forName(serializerName).newInstance().asInstanceOf[Serializer]
-
+    val serializer = if (serializerName.trim == "")
+                       new JavaNativeSerializer 
+                     else
+                       Class.forName(serializerName).newInstance().asInstanceOf[Serializer]
 
     // serialize
     val bytes = serializer.serialize(mail)
@@ -30,16 +36,14 @@ class AmqpMailet extends GenericMailet {
 
     val channel = conn.createChannel()
 
-    channel.exchangeDeclare("testExchange", "direct", true)
-    channel.queueDeclare("testQueue", true, false, false, null)
-    channel.queueBind("testQueue", "testExchange", "testKey")
+    channel.exchangeDeclare(exchange, protocol, true)
+    channel.queueDeclare(queue, true, false, false, null)
+    channel.queueBind(queue, exchange, key)
 
-    channel.basicPublish("testExchange", "testKey", null, bytes)
+    channel.basicPublish(exchange, key, null, bytes)
 
     channel.close()
     conn.close()
-
-    // TODO: send bytes to AMQP
 
   }
 
