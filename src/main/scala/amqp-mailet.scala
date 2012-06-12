@@ -18,7 +18,7 @@ class AmqpMailet extends GenericMailet {
     val vhost = getInitParameter("vhost")
     val exchange = getInitParameter("exchange")
     val queue = getInitParameter("queue")
-    val key = getInitParameter("key")
+    val routingKey = getInitParameter("routing-key")
     val protocol = getInitParameter("protocol")
 
     val uri = "amqp://%s:%s@%s:%s/%s" format (username, password, host, port, vhost)
@@ -33,14 +33,17 @@ class AmqpMailet extends GenericMailet {
     val factory = new ConnectionFactory()
     factory.setUri(uri)
     val conn = factory.newConnection()
-
     val channel = conn.createChannel()
 
+    // a durable exchange
     channel.exchangeDeclare(exchange, protocol, true)
-    channel.queueDeclare(queue, true, false, false, null)
-    channel.queueBind(queue, exchange, key)
 
-    channel.basicPublish(exchange, key, null, bytes)
+    // a durable, non-exclusive, non-autodelete queue
+    channel.queueDeclare(queue, true, false, false, null)
+
+    channel.queueBind(queue, exchange, routingKey)
+
+    channel.basicPublish(exchange, routingKey, null, bytes)
 
     channel.close()
     conn.close()
