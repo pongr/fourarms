@@ -19,7 +19,7 @@ trait SimpleDbLookup extends Lookup with SimpleDbQuery {
 
   def query = "select * from %s where %s" format (domain, attribute)
   def itemToString(item: Item): String = item(attribute) getOrElse ""
-  def items: Seq[String] = selectMany(sdb, true) (itemToString) (query)
+  def items: Seq[String] = selectMany(sdb) (itemToString) (query)
 
   def exist_?(e: String) = items contains e
 
