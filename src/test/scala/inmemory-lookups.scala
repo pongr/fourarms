@@ -1,6 +1,6 @@
 package com.pongr.fourarms.matcher
 
-class InmemoryRejectLookup(condition: String) extends Lookup {
+class InmemoryRejectLookup extends Lookup {
 
   val emails = List("spammer@test.com", "spam@test.com", "nogood@test.com")
 
@@ -9,7 +9,7 @@ class InmemoryRejectLookup(condition: String) extends Lookup {
 }
 
 
-class InmemoryRelayLookup(condition: String) extends Lookup {
+class InmemoryRelayLookup extends Lookup {
 
   val emails = List("important@test.com")
 
@@ -17,7 +17,7 @@ class InmemoryRelayLookup(condition: String) extends Lookup {
 
 }
 
-class InmemoryRejectDomainLookup(condition: String) extends Lookup {
+class InmemoryRejectDomainLookup extends Lookup {
 
   val domains = List("wearespammer.com", "tom.com")
 

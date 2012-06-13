@@ -13,13 +13,10 @@ trait Lookup {
 
 trait ElementsFromLookup { this: Matcher => 
 
-  def condition = getMatcherConfig.getCondition
-  def lookupClassName = condition.split(",").head
+  lazy val lookupClassName = getMatcherConfig.getCondition
 
   // Creating an instance of the email lookup
-  def lookupInstance: Lookup = Class.forName(lookupClassName)
-                                    .getDeclaredConstructor(classOf[String])
-                                    .newInstance(condition).asInstanceOf[Lookup]
+  lazy val lookupInstance: Lookup = Class.forName(lookupClassName).newInstance.asInstanceOf[Lookup]
 
   def exist_?(e: String) = lookupInstance.exist_?(e)
 
@@ -34,7 +31,7 @@ class RecipientIsInLookup extends GenericRecipientMatcher with ElementsFromLooku
 
 /*
   Matches if sender is in the file specified in the condition. Usage would be like:
-  <mailet match="SenderIsInFile=com.pongr.fouramrs.matcher.SimpleDbLookup, com.domain.AwsCred" class="ToProcessor">
+  <mailet match="SenderIsInFile=com.pongr.fouramrs.matcher.SimpleDbLookup" class="ToProcessor">
 */
 class SenderIsInLookup extends GenericMatcher with FromMethods with ElementsFromLookup {
 

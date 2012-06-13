@@ -21,7 +21,7 @@ class AmqpMailet extends PongrMailet {
     val exchange = getInitParameter("exchange")
     val queue = getInitParameter("queue")
     val routingKey = getInitParameter("routing-key")
-    val protocol = getInitParameter("protocol", "direct")
+    val exchangeType = getInitParameter("exchangeType", "direct")
 
     val uri = "amqp://%s:%s@%s:%s/%s" format (username, password, host, port, vhost)
     val serializer = if (isBlank(serializerName))
@@ -38,7 +38,7 @@ class AmqpMailet extends PongrMailet {
     val channel = conn.createChannel()
 
     // a durable exchange
-    channel.exchangeDeclare(exchange, protocol, true)
+    channel.exchangeDeclare(exchange, exchangeType, true)
 
     // a durable, non-exclusive, non-autodelete queue
     channel.queueDeclare(queue, true, false, false, null)
