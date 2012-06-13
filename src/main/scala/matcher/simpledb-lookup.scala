@@ -9,6 +9,7 @@ import com.pongr.fourarms.simpledb.Implicits._
 
 trait SimpleDbLookup extends Lookup with SimpleDbQuery {
 
+  // SimpleDB credentials
   def accessKeyId: String
   def secretAccessKey: String
   def domain: String
