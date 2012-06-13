@@ -1,6 +1,5 @@
 package com.pongr.fourarms.serializer
 
-import org.apache.james.core.MailImpl
 import org.apache.mailet._
 
 import java.io._
