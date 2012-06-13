@@ -21,16 +21,18 @@ class SerializerSpec extends Specification {
 
     val sender = new InternetAddress("test-sender@pongr.com", "Test Sender")
     val recipient = new InternetAddress("test-recipient@pongr.com", "Test Recipient")
+    val cc = new InternetAddress("test-cc@pongr.com", "TEST CC")
 
     message.setFrom(sender)
     message.setRecipient(Message.RecipientType.TO, recipient)
+    message.setRecipient(Message.RecipientType.CC, cc)
     message.setSubject("Test mail subject")
 
     val multipart = new MimeMultipart
 
     // Part one
     val messageBodyPart = new MimeBodyPart
-    messageBodyPart.setText("Hi");
+    messageBodyPart.setText("Hi, This is test email body.")
     multipart.addBodyPart(messageBodyPart)
 
     // Part two => attachment
@@ -67,7 +69,7 @@ class SerializerSpec extends Specification {
     "serialize mail object" in {
 
       val message = createMimeMessage
-      val m1 = new MailImpl()
+      val m1 = new MailImpl
       m1.setMessage(message)
 
       val bytes = serializer.serialize(m1)
