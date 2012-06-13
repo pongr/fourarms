@@ -64,7 +64,7 @@ class SerializerSpec extends Specification {
 
   "SerializerSpec test" should {
 
-    "serialize mail object" in {
+    "serialize/deserialize mail object" in {
 
       val message = createMimeMessage
       val m1 = new MailImpl
