@@ -3,6 +3,7 @@ package com.pongr.fourarms.serializer
 import org.apache.mailet._
 
 import java.io._
+import javax.mail.internet.MimeMessage
 
 trait Serializer {
 
@@ -12,7 +13,7 @@ trait Serializer {
 
 trait Deserializer {
 
-  def deSerialize(b: Array[Byte]): Mail
+  def deserialize(b: Array[Byte]): Mail
 
 }
 
@@ -22,16 +23,18 @@ class JavaNativeSerializer extends Serializer with Deserializer {
     val bos = new ByteArrayOutputStream
     val out = new ObjectOutputStream(bos)
     out.writeObject(mail)
+    mail.getMessage.writeTo(bos)
     out.close
-
     bos.toByteArray
   }
 
-  def deSerialize(b: Array[Byte]): Mail = {
-    val stream = new ByteArrayInputStream(b)
-    val in = new ObjectInputStream(stream)
-    val mail = in.readObject.asInstanceOf[Mail]
-    in.close
+  def deserialize(b: Array[Byte]): Mail = {
+    val bis = new ByteArrayInputStream(b)
+    val ois = new ObjectInputStream(bis)
+    val mail = ois.readObject.asInstanceOf[Mail]
+    val message = new MimeMessage(null, bis)
+    ois.close
+    mail.setMessage(message)
     mail
   }
 
