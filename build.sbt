@@ -20,6 +20,8 @@ libraryDependencies ++= Seq(
   "com.rabbitmq" % "amqp-client" % "2.8.2"
 )
 
+//http://www.scala-sbt.org/using_sonatype.html
+//https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
 publishTo <<= version { v: String =>
   val nexus = "https://oss.sonatype.org/"
   if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots/")
