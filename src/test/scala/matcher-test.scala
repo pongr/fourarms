@@ -1,6 +1,10 @@
 package com.pongr.fourarms.matcher
 
 import org.specs2.mutable._
+import org.mockito.invocation._
+import org.mockito.stubbing._
+import org.mockito.Mockito._
+
 
 class MatcherSpec extends Specification with Mocks {
 

@@ -24,8 +24,16 @@ trait ElementsFromLookup { this: Matcher =>
 
 class RecipientIsInLookup extends GenericRecipientMatcher with ElementsFromLookup {
 
-  override def matchRecipient(recipient: MailAddress): Boolean =
-    exist_?(recipient.getLocalPart.trim.toLowerCase)
+  override def matchRecipient(recipient: MailAddress): Boolean = {
+    val r = recipient.getLocalPart.trim.toLowerCase
+    val matchResult = exist_?(r)
+
+    if (matchResult)
+      // use try/catch to avoid NPE when testing with mock object
+      try { log("Recipient %s matched!".format(r)) } catch { case e => }
+
+    matchResult
+  }
 
 }
 
@@ -37,8 +45,10 @@ class SenderIsInLookup extends GenericMatcher with FromMethods with ElementsFrom
 
   override def `match`(mail: Mail): JCollection[_] = {
     val sender = getFromEmail(mail)
-    if (exist_?(sender))
+    if (exist_?(sender)) {
+      log("Sender %s matched!".format(sender))
       mail.getRecipients
+    }
     else
       Nil
   }
@@ -49,7 +59,9 @@ class SenderDomainIsInLookup extends GenericMatcher with FromMethods with Elemen
 
   override def `match`(mail: Mail): JCollection[_] = {
     getDomain(mail) match {
-      case Some(domain) => if (exist_?(domain)) mail.getRecipients else Nil
+      case Some(domain) if (exist_?(domain)) =>
+        log("SenderDomain %s matched!".format(domain))
+        mail.getRecipients 
       case _ => Nil
     }
   }
