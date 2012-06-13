@@ -3,6 +3,8 @@ package com.pongr.fourarms.mailet
 import org.apache.mailet._
 import org.apache.mailet.base._
 import com.rabbitmq.client._
+import org.apache.commons.lang.StringUtils.isBlank
+
 
 import com.pongr.fourarms.serializer._
 
@@ -22,7 +24,7 @@ class AmqpMailet extends PongrMailet {
     val protocol = getInitParameter("protocol", "direct")
 
     val uri = "amqp://%s:%s@%s:%s/%s" format (username, password, host, port, vhost)
-    val serializer = if (serializerName.trim == "")
+    val serializer = if (isBlank(serializerName))
                        new DefaultSerializer 
                      else
                        Class.forName(serializerName).newInstance().asInstanceOf[Serializer]
