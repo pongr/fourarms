@@ -35,6 +35,15 @@ trait FromMethods {
     case _ => None
   }
 
+  def getDomain(mail: Mail): Option[String] = {
+    val sender = getFromEmail(mail)
+    val index = sender lastIndexOf "@"
+    if (index >= 0 && index < sender.length - 1)
+      Some(sender substring (index + 1))
+    else
+      None
+  }
+
   //From: "First, Last" <First.Last@host.com>
   //From: "First Last" <email@host.com>
   //From: First Last <email@host.com>
