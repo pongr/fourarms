@@ -16,7 +16,7 @@ trait SimpleDbLookup extends Lookup with SimpleDbQuery {
   def attribute: String
 
   // Creating an instance of the email lookup
-  val sdb = new AmazonSimpleDBClient(new BasicAWSCredentials(accessKeyId, secretAccessKey))
+  lazy val sdb = new AmazonSimpleDBClient(new BasicAWSCredentials(accessKeyId, secretAccessKey))
 
   def query = "select * from %s where %s" format (domain, attribute)
   def itemToString(item: Item): String = item(attribute) getOrElse ""
