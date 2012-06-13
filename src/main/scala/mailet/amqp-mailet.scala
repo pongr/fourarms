@@ -23,7 +23,7 @@ class AmqpMailet extends PongrMailet {
 
     val uri = "amqp://%s:%s@%s:%s/%s" format (username, password, host, port, vhost)
     val serializer = if (serializerName.trim == "")
-                       new JavaNativeSerializer 
+                       new DefaultSerializer 
                      else
                        Class.forName(serializerName).newInstance().asInstanceOf[Serializer]
 

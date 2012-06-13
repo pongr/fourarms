@@ -17,7 +17,7 @@ trait Deserializer {
 
 }
 
-class JavaNativeSerializer extends Serializer with Deserializer {
+class DefaultSerializer extends Serializer with Deserializer {
 
   def serialize(mail: Mail): Array[Byte] = {
     val bos = new ByteArrayOutputStream

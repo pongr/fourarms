@@ -12,7 +12,7 @@ import java.io._
 
 class SerializerSpec extends Specification {
 
-  def serializer = new JavaNativeSerializer
+  def serializer = new DefaultSerializer
 
   def createMimeMessage = {
     val message = new MimeMessage(null: Session)
