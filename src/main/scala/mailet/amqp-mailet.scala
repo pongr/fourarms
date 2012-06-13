@@ -6,7 +6,7 @@ import com.rabbitmq.client._
 
 import com.pongr.fourarms.serializer._
 
-class AmqpMailet extends GenericMailet {
+class AmqpMailet extends PongrMailet {
 
   override def service(mail: Mail) {
 
@@ -19,7 +19,7 @@ class AmqpMailet extends GenericMailet {
     val exchange = getInitParameter("exchange")
     val queue = getInitParameter("queue")
     val routingKey = getInitParameter("routing-key")
-    val protocol = getInitParameter("protocol")
+    val protocol = getInitParameter("protocol", "direct")
 
     val uri = "amqp://%s:%s@%s:%s/%s" format (username, password, host, port, vhost)
     val serializer = if (serializerName.trim == "")

@@ -35,13 +35,6 @@ trait FromMethods {
     case _ => None
   }
 
-  def getDomain(mail: Mail): String = getFromAddress(mail) match {
-    case Some(addr) => 
-      val a = addr.getAddress
-      a.substring(a.indexOf("@") + 1, a.length)
-    case _ => ""
-  }
-
   //From: "First, Last" <First.Last@host.com>
   //From: "First Last" <email@host.com>
   //From: First Last <email@host.com>

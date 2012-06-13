@@ -48,14 +48,19 @@ class SenderIsInLookup extends GenericMatcher with FromMethods with ElementsFrom
 
 }
 
-class DomainIsInLookup extends GenericMatcher with FromMethods with ElementsFromLookup {
+class SenderDomainIsInLookup extends GenericMatcher with FromMethods with ElementsFromLookup {
 
   override def `match`(mail: Mail): JCollection[_] = {
-    val domain = getDomain(mail)
-    if (exist_?(domain))
-      mail.getRecipients
-    else
-      Nil
+    val sender = getFromEmail(mail)
+    val index = sender lastIndexOf "@"
+    if (index >= 0 && index < sender.length - 1) {
+      val senderDomain = sender substring (index + 1)
+      log("Testing if sender domain %s is contained in reject list".format(senderDomain))
+      if (exist_?(senderDomain)) {
+        log("Rejecting because sender domain is %s".format(senderDomain))
+        mail.getRecipients
+      } else Nil
+    } else Nil
   }
 
 }

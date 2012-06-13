@@ -28,7 +28,7 @@ class MatcherSpec extends Specification with Mocks {
     }
 
     "match domains if the sender domain is in the lookup" in {
-      val m = spy(new DomainIsInLookup)
+      val m = spy(new SenderDomainIsInLookup)
       m.getMatcherConfig returns rejectDomainMatcherCfg
 
       // match the email
