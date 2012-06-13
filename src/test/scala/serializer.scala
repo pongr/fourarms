@@ -10,8 +10,6 @@ import javax.mail._
 import javax.mail.internet._
 import java.io._
 
-import org.apache.mailet.base.test._
-
 class SerializerSpec extends Specification {
 
   def serializer = new JavaNativeSerializer
