@@ -18,7 +18,9 @@ libraryDependencies ++= Seq(
   "com.rabbitmq" % "amqp-client" % "2.8.2",
   "org.specs2" %% "specs2" % "1.11" % "test",
   "org.mockito" % "mockito-all" % "1.9.0" % "test",
-  "org.apache.james" % "james-server-core" % "3.0-beta3" % "test"
+  "org.apache.james" % "james-server-core" % "3.0-beta3" % "test",
+  "com.yammer.metrics" % "metrics-core" % "2.1.2",
+  "com.yammer.metrics" % "metrics-graphite" % "2.1.2"
 )
 
 //http://www.scala-sbt.org/using_sonatype.html
