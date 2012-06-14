@@ -20,20 +20,36 @@ trait Deserializer {
 class DefaultSerializer extends Serializer with Deserializer {
 
   def serialize(mail: Mail): Array[Byte] = {
-    val bos = new ByteArrayOutputStream
-    val out = new ObjectOutputStream(bos)
+    val mailBos = new ByteArrayOutputStream
+    val out = new ObjectOutputStream(mailBos)
     out.writeObject(mail)
-    mail.getMessage.writeTo(bos)
     out.close
-    bos.toByteArray
+
+    val mimeBos = new ByteArrayOutputStream
+    mail.getMessage.writeTo(mimeBos)
+
+    val combined = Array(mailBos.toByteArray, mimeBos.toByteArray)
+
+    val combinedBos = new ByteArrayOutputStream
+    val combinedOut = new ObjectOutputStream(combinedBos)
+    combinedOut.writeObject(combined)
+    combinedOut.close
+
+    combinedBos.toByteArray
   }
 
   def deserialize(b: Array[Byte]): Mail = {
-    val bis = new ByteArrayInputStream(b)
-    val ois = new ObjectInputStream(bis)
-    val mail = ois.readObject.asInstanceOf[Mail]
-    val message = new MimeMessage(null, bis)
-    ois.close
+    val combinedBis = new ByteArrayInputStream(b)
+    val combinedOis = new ObjectInputStream(combinedBis)
+    val combined = combinedOis.readObject.asInstanceOf[Array[Array[Byte]]]
+
+    val mailBis = new ByteArrayInputStream(combined(0))
+    val mailOis = new ObjectInputStream(mailBis)
+    val mail = mailOis.readObject.asInstanceOf[Mail]
+
+    val message = new MimeMessage(null, new ByteArrayInputStream(combined(1)))
+
+    combinedOis.close
     mail.setMessage(message)
     mail
   }
