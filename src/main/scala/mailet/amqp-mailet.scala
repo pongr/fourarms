@@ -48,7 +48,7 @@ class AmqpMailet extends PongrMailet with FromMethods {
 
     channel.queueBind(queue, exchange, routingKey)
 
-    log("Sending (From: %s, Name: %s) to AMQP queue." format (getFromEmail(mail), mail.getName))
+    log("Sending (From: %s, Name: %s) to AMQP(VHost: %s, exchange: %s, queue: %s)." format (getFromEmail(mail), mail.getName, vhost, exchange, queue))
     channel.basicPublish(exchange, routingKey, null, bytes)
 
     channel.close()
