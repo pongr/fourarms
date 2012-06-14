@@ -15,11 +15,7 @@ class MeterMailet extends PongrMailet {
 
   lazy val eventType = getInitParameter("eventType")
   
-  lazy val timeUnit = getInitParameter("timeUnit", "minutes") match {
-    case "minutes"      => TimeUnit.MINUTES
-    case "milliseconds" => TimeUnit.MILLISECONDS
-    case _              => TimeUnit.SECONDS
-  }
+  lazy val timeUnit = getTimeUnit(getInitParameter("timeUnit", "minutes"))
 
   lazy val metricName = new MetricName(group, metricType, name, scope)
   lazy val meter = Metrics.newMeter(metricName, eventType, timeUnit)
