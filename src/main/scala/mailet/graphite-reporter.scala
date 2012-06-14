@@ -12,6 +12,7 @@ class GraphiteReporterMailet extends PongrMailet {
 
   override def init() {
     GraphiteReporter.enable(period, timeUnit, host, port)
+    log("Enabled GraphiteReporter to report to %s:%d every %d %s" format (host, port, period, timeUnit))
   }
 
   override def service(mail: Mail) {
@@ -26,7 +27,7 @@ import com.yammer.metrics.reporting.ConsoleReporter
   * using period and timeUnit parameters. Ignores all mail in the service() method.
   * 
   * {{{
-  * <mailet match="All" class="com.pongr.fourarms.mailet.ConsoleReporterMailet>
+  * <mailet match="All" class="com.pongr.fourarms.mailet.ConsoleReporterMailet">
   *   <period>10</period>
   *   <timeUnit>seconds</timeUnit>
   * </mailet>
@@ -38,6 +39,7 @@ class ConsoleReporterMailet extends PongrMailet {
   
   override def init() {
     ConsoleReporter.enable(period, timeUnit)
+    log("Enabled ConsoleReporter to report every %d %s" format (period, timeUnit))
   }
   
   override def service(mail: Mail) {
