@@ -41,7 +41,7 @@ class AmqpMailet extends PongrMailet with FromMethods {
     
     val channel = conn.createChannel()
     channel.exchangeDeclare(exchange, exchangeType, true)
-    log("Declared durable exchange %s of type %s" format (exchange, exchangeType))
+    log("Declared durable %s exchange %s" format (exchangeType, exchange))
     channel.close()
   }
 
@@ -49,6 +49,12 @@ class AmqpMailet extends PongrMailet with FromMethods {
 
     // serialize
     val bytes = serializer.serialize(mail)
+    
+    import java.io._
+    import org.apache.commons.io._
+    val file = File.createTempFile("serializedMail", "")
+    FileUtils.writeByteArrayToFile(file, bytes)
+    log("Saved bytes to %s" format file)
 
     val channel = conn.createChannel()
 
