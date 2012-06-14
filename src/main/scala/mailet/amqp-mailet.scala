@@ -6,9 +6,10 @@ import com.rabbitmq.client._
 import org.apache.commons.lang.StringUtils.isBlank
 
 
+import com.pongr.fourarms.util._
 import com.pongr.fourarms.serializer._
 
-class AmqpMailet extends PongrMailet {
+class AmqpMailet extends PongrMailet with FromMethods {
 
   override def service(mail: Mail) {
 
@@ -47,6 +48,7 @@ class AmqpMailet extends PongrMailet {
 
     channel.queueBind(queue, exchange, routingKey)
 
+    log("Sending (From: %s, Name: %s) to AMQP queue." format (getFromEmail(mail), mail.getName))
     channel.basicPublish(exchange, routingKey, null, bytes)
 
     channel.close()
