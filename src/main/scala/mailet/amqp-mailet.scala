@@ -35,6 +35,11 @@ class AmqpMailet extends PongrMailet with FromMethods {
     val factory = new ConnectionFactory()
     factory.setUri(uri)
     conn = factory.newConnection()
+    
+    val channel = conn.createChannel()
+    // a durable exchange
+    channel.exchangeDeclare(exchange, exchangeType, true)
+    channel.close()
   }
 
   override def service(mail: Mail) {
@@ -43,9 +48,6 @@ class AmqpMailet extends PongrMailet with FromMethods {
     val bytes = serializer.serialize(mail)
 
     val channel = conn.createChannel()
-
-    // a durable exchange
-    channel.exchangeDeclare(exchange, exchangeType, true)
 
     // a durable, non-exclusive, non-autodelete queue
     // channel.queueDeclare(queue, true, false, false, null)
