@@ -18,7 +18,7 @@ trait SimpleDbLookup extends Lookup {
   def domain: String
   def attribute: String
 
-  def timerName = "SimpleDbLookup.Timer"
+  def timerName = "SimpleDbLookup"
   def durationUnit = TimeUnit.MILLISECONDS
   def rateUnit = TimeUnit.SECONDS
 
