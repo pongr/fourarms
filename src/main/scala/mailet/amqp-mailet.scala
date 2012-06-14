@@ -28,17 +28,20 @@ class AmqpMailet extends PongrMailet with FromMethods {
                           new DefaultSerializer 
                         else
                           Class.forName(serializerName).newInstance().asInstanceOf[Serializer]
+                          
+  lazy val uri = "amqp://%s:%s@%s:%s/%s" format (username, password, host, port, vhost)
   var conn : Connection = _
 
   override def init() {
-    val uri = "amqp://%s:%s@%s:%s/%s" format (username, password, host, port, vhost)
+    log("Opening AMQP Connection to %s..." format uri)
     val factory = new ConnectionFactory()
     factory.setUri(uri)
     conn = factory.newConnection()
+    log("Opened AMQP Connection to %s" format uri)
     
     val channel = conn.createChannel()
-    // a durable exchange
     channel.exchangeDeclare(exchange, exchangeType, true)
+    log("Declared durable exchange %s of type %s" format (exchange, exchangeType))
     channel.close()
   }
 
@@ -65,6 +68,7 @@ class AmqpMailet extends PongrMailet with FromMethods {
 
   override def destroy() {
     conn.close()
+    log("Closed AMQP Connection to %s" format uri)
   }
 
 }
