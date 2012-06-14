@@ -1,57 +1,54 @@
 package com.pongr.fourarms.serializer
 
+import com.pongr.fourarms.mail.PongrMail
 import org.apache.mailet._
 
 import java.io._
-import javax.mail.internet.MimeMessage
+import javax.mail.internet._
 
 trait Serializer {
 
-  def serialize(m: Mail): Array[Byte]
+  def serialize(m: PongrMail): Array[Byte]
+  def serialize(m: Mail): Array[Byte] = serialize(PongrMail(m))
 
 }
 
 trait Deserializer {
 
-  def deserialize(b: Array[Byte]): Mail
+  def deserialize(b: Array[Byte]): PongrMail
 
 }
 
 class DefaultSerializer extends Serializer with Deserializer {
 
-  def serialize(mail: Mail): Array[Byte] = {
-    val mailBos = new ByteArrayOutputStream
-    val out = new ObjectOutputStream(mailBos)
-    out.writeObject(mail)
+  def serialize(mail: PongrMail): Array[Byte] = {
+    val bos = new ByteArrayOutputStream
+    val out = new ObjectOutputStream(bos)
+
+    out.writeObject(mail.sender)
+    out.writeObject(mail.recipients)
+    out.writeObject(mail.remoteHost)
+    out.writeObject(mail.remoteAddr)
+
+    mail.message.writeTo(bos)
+
     out.close
-
-    val mimeBos = new ByteArrayOutputStream
-    mail.getMessage.writeTo(mimeBos)
-
-    val combined = Array(mailBos.toByteArray, mimeBos.toByteArray)
-
-    val combinedBos = new ByteArrayOutputStream
-    val combinedOut = new ObjectOutputStream(combinedBos)
-    combinedOut.writeObject(combined)
-    combinedOut.close
-
-    combinedBos.toByteArray
+    bos.toByteArray
   }
 
-  def deserialize(b: Array[Byte]): Mail = {
-    val combinedBis = new ByteArrayInputStream(b)
-    val combinedOis = new ObjectInputStream(combinedBis)
-    val combined = combinedOis.readObject.asInstanceOf[Array[Array[Byte]]]
+  def deserialize(b: Array[Byte]): PongrMail = {
+    val bis = new ByteArrayInputStream(b)
+    val ois = new ObjectInputStream(bis)
 
-    val mailBis = new ByteArrayInputStream(combined(0))
-    val mailOis = new ObjectInputStream(mailBis)
-    val mail = mailOis.readObject.asInstanceOf[Mail]
+    val sender = ois.readObject.asInstanceOf[MailAddress]
+    val recipients = ois.readObject.asInstanceOf[java.util.Collection[_]]
+    val remoteHost = ois.readObject.asInstanceOf[String]
+    val remoteAddr = ois.readObject.asInstanceOf[String]
 
-    val message = new MimeMessage(null, new ByteArrayInputStream(combined(1)))
+    val message = new MimeMessage(null, bis)
+    ois.close
 
-    combinedOis.close
-    mail.setMessage(message)
-    mail
+    PongrMail(sender, recipients, remoteHost, remoteAddr, message)
   }
 
 }
