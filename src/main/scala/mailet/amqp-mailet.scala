@@ -23,6 +23,8 @@ class AmqpMailet extends PongrMailet {
     val routingKey = getInitParameter("routing-key")
     val exchangeType = getInitParameter("exchangeType", "direct")
 
+    val setGhostState_? = getInitParameter("ghost", true)
+
     val uri = "amqp://%s:%s@%s:%s/%s" format (username, password, host, port, vhost)
     val serializer = if (isBlank(serializerName))
                        new DefaultSerializer 
@@ -49,6 +51,9 @@ class AmqpMailet extends PongrMailet {
 
     channel.close()
     conn.close()
+
+    if (setGhostState_?)
+      mail.setState(Mail.GHOST)
 
   }
 
