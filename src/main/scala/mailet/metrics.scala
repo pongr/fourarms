@@ -4,7 +4,9 @@ import org.apache.mailet._
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.core.MetricName
 
-class MetricsMailet extends PongrMailet {
+import java.util.concurrent.TimeUnit
+
+class MeterMailet extends PongrMailet {
 
   lazy val group = getInitParameter("group")
   lazy val metricType = getInitParameter("type")
