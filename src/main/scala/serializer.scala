@@ -20,7 +20,9 @@ trait Deserializer {
 }
 
 class DefaultSerializer extends Serializer with Deserializer {
-
+  /** Serializes emails
+    * 
+    */
   def serialize(mail: PongrMail): Array[Byte] = {
     val bos = new ByteArrayOutputStream
     val out = new ObjectOutputStream(bos)

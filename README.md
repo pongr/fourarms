@@ -8,7 +8,6 @@ Fourarms is a small project based on [Apache James](http://james.apache.org), pr
 ```scala
 // Fourarms is available at https://oss.sonatype.org/
 "com.pongr" %% "fourarms" % "0.1-SNAPSHOT"
-
 ```
 
 ### Maven
@@ -21,26 +20,53 @@ Fourarms is a small project based on [Apache James](http://james.apache.org), pr
 </dependency>
 ```
 
-###Matchers
+### Matchers
 
 * SenderIsInLookup
 
-  If the sender of a received email exist in the provided lookup transfers the email to the processor provided with parameter.
-  ```xml
-  <mailet match="com.pongr.fourarms.matcher.SenderIsInLookup=org.domain.SpamSenderLookup" class="ToProcessor">
-      <processor>reject</processor>
-  </mailet>
+  If the sender of a received email exists it transfers the email to the processor provided by the parameter. It uses Lookup trait to to check if the sender is in the lookup. So you'll have to provide an implementation of Lookup trait.
+
+  Lookup trait is simple as:
+  ```scala
+  trait Lookup {
+      def exist_?(element: String): Boolean
+  }
   ```
+  A simple way to implement Lookup trait is hard-coding the emails.
 
   ```scala
   package org.domain
 
   import com.pongr.fourarms.matcher.Lookup
-  class SpamSenderLookup extends Lookup {
+  class HardCodedSpamSenderLookup extends Lookup {
       val emails = List("spammer@test.com", "spam@test.com")
       def exist_?(e: String) =  contains e
   }
   ```
+
+  And in James xml confuguration it would go like:
+  ```xml
+  <mailet match="com.pongr.fourarms.matcher.SenderIsInLookup=org.domain.HardCodedSpamSenderLookup" class="ToProcessor">
+      <processor>reject</processor>
+  </mailet>
+  ```
+  Fourarms also has SimpleDB lookup trait that extends Lookup trait. Here is an usage of that:
+
+  ```scala
+  class SimpleDbSpamSenderLookup extends SimpleDbLookup {
+    val accessKeyId = "simpledb access key id"
+    val secretAccessKey = "simpledb secret access key"
+    val domain = "simple domain"
+    val attribute = "spammerEmail"
+  }
+  ```
+
+  James xml configuration:
+  ```xml
+  <mailet match="com.pongr.fourarms.matcher.SenderIsInLookup=org.domain.SimpleDbSpamSenderLookup" class="ToProcessor">
+      <processor>reject</processor>
+  </mailet>
+
 
 * RecipientIsInLookup
 
@@ -51,26 +77,25 @@ Fourarms is a small project based on [Apache James](http://james.apache.org), pr
   </mailet>
   ```
 
-* DomainIsInLookup
+* SenderDomainIsInLookup
 
-  Similiar to SenderIsInLookup but tests the domain of received emails.
+  Similiar to SenderIsInLookup but tests the sender domain of received emails. Let's say we have an email sent from **sender@domain.com**. SenderDomainIsInLookup will test **domain.com** against the lookup where SenderIsInLookup would test **sender@domain.com**.
+
   ```xml
-  <mailet match="com.pongr.fourarms.matcher.DomainIsInLookup=org.domain.SpamDomainLookup" class="ToProcessor">
+  <mailet match="com.pongr.fourarms.matcher.SenderDomainIsInLookup=org.domain.SpamSenderDomainLookup" class="ToProcessor">
       <processor>reject</processor>
   </mailet>
   ```
 
-Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to implement com.pongr.fourarms.matcher.Lookup trait.
-
 ### Mailets
 
-* Rabbit AMPQ mailet
+* AMPQ mailet
 
-  Serializes received emails and send over RabbitMQ.
+  Serializes received emails and send over AMQP server.
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.AmqpMailet">
       <serializer>com.pongr.fourarms.serializer.DefaultSerializer</serializer>
-      <host>rabbitmq.domain.org</host>
+      <host>amqp-server.domain.org</host>
       <port>5672</port>
       <vhost>test</vhost>
       <username>testuser</username>
@@ -112,7 +137,7 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
 
 * ChangeRecipient mailet
 
-  Rewrites x@pongr.com to y@pongr.com before sending to web service.
+  Changes a matching recipient on the Mail object, so that matchers and mailets further down the processing chain will see the new recipient address instead of old one.
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.ChangeRecipient">
       <oldRecipient>x@domain.org</oldRecipient>
@@ -122,7 +147,7 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
 
 * ChangeRecipientDomain
 
-  Rewrites the recipient domain of emails before sending to web service.
+  Changes a matching recipient domain of received email before sending.
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.ChangeRecipientDomain">
       <oldDomain>fourarm.domain.org</oldDomain>
