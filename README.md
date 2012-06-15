@@ -89,7 +89,7 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
 
 * GraphiteReporter mailet
 
-  Enables [metrics-graphite](http://metrics.codahale.com/manual/graphite/) module to report to the provided server.
+  Enables [metrics-graphite](http://metrics.codahale.com/manual/graphite/) module to report to the graphite server defined by the parameters.
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.GraphiteReporterMailet">
       <host>graphite.domain.org</host>
