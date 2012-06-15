@@ -22,6 +22,7 @@ import org.apache.mailet._
 import java.io._
 import javax.mail.internet._
 
+/** Converts PongrMail to Array[Byte] */
 trait Serializer {
 
   def serialize(m: PongrMail): Array[Byte]
@@ -29,16 +30,17 @@ trait Serializer {
 
 }
 
+/** Converts Array[Byte] to PongrMail */
 trait Deserializer {
 
   def deserialize(b: Array[Byte]): PongrMail
 
 }
 
+/** 
+  * Default implementation of Serialize and Deserializer traits.
+  */
 class DefaultSerializer extends Serializer with Deserializer {
-  /** Serializes emails
-    * 
-    */
   def serialize(mail: PongrMail): Array[Byte] = {
     val bos = new ByteArrayOutputStream
     val out = new ObjectOutputStream(bos)

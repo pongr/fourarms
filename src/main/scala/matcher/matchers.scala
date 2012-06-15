@@ -24,11 +24,14 @@ import java.util.{Collection => JCollection}
 import com.pongr.fourarms.util.FromMethods
 
 trait Lookup {
+  /**
+   * Returns true if the specified string exists in the lookup
+   */
   def exist_?(element: String): Boolean
 }
 
 /**
- * A reusable trait that contains lookUp instance creation and the lookup method.
+ * A reusable trait that contains LookUp trait instance creation and the exits_? method.
  */
 trait ElementsFromLookup { this: Matcher => 
 

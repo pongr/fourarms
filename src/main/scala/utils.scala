@@ -21,6 +21,9 @@ import javax.mail.Address
 import javax.mail.internet.InternetAddress
 import org.apache.commons.lang.StringUtils.isBlank
 
+/**
+ * Provides useful methods to extract different kind of information from Mail object.
+ */
 trait FromMethods {
 
   def defaultLastName = "X"
