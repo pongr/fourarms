@@ -1,6 +1,6 @@
 # Fourarms
 
-Fourarms is a small project based on [Apache James](http://james.apache.org), provides a collection of useful mailets and matchers.
+A collection of Scala-based mailets and matchers for Apache James [Apache James](http://james.apache.org).
 
 ## Install
 
