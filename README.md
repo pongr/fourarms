@@ -2,17 +2,16 @@
 
 Fourarms provides a collection of useful mailets and matchers.
 
-# sbt
+## sbt
 
 ``` scala
 // Fourarms is available at https://oss.sonatype.org/
 val fourarms = "com.pongr" %% "fourarms" % "0.1-SNAPSHOT"
 ```
 
-# Usage
+## Usage
 
-Matchers
-----------
+### Matchers
 
 * SenderIsInFile
   ```xml 
@@ -37,8 +36,7 @@ Matchers
 
 SenderLookup, RecipientLookup and DomainLookup classes have to implement com.pongr.fourarms.matcher.SimpleDbLookup trait.
 
-Mailets
-----------
+### Mailets
 
 * Rabbit AMPQ mailet
   ```xml
