@@ -115,8 +115,8 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
   Rewrites the recipient domain of emails before sending to web service.
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.ChangeRecipientDomain">
-      <oldDomain>fourarm.pongrdev.com</oldDomain>
-      <newDomain>fourarms.pongrdev.com</newDomain>
+      <oldDomain>fourarm.domain.org</oldDomain>
+      <newDomain>fourarms.domain.org</newDomain>
   </mailet>
   ```
 
