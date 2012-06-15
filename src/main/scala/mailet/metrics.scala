@@ -19,9 +19,11 @@ package com.pongr.fourarms.mailet
 import org.apache.mailet._
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.core.MetricName
-
 import java.util.concurrent.TimeUnit
 
+/**
+ * Measures various received email rates. 
+ */
 class MeterMailet extends PongrMailet {
 
   lazy val group = getInitParameter("group")
@@ -36,6 +38,7 @@ class MeterMailet extends PongrMailet {
   lazy val metricName = new MetricName(group, metricType, name, scope)
   lazy val meter = Metrics.newMeter(metricName, eventType, timeUnit)
   
+  /** Creates Yammer Meter and calls mark() in its service method. */
   override def service(mail: Mail) {
     meter.mark()
   }

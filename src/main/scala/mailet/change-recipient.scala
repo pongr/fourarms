@@ -20,6 +20,10 @@ package com.pongr.fourarms.mailet
 import org.apache.mailet._
 import scala.collection.JavaConversions._
 
+/**
+ * A mailet that changes a matching recipient on the Mail object, so that matchers and mailets 
+ * further down the processing chain will see the new recipient address instead of old one.
+ */
 class ChangeRecipient extends PongrMailet {
   lazy val oldRecipient = getInitParameter("oldRecipient").trim.toLowerCase
   lazy val newRecipient = getInitParameter("newRecipient").trim.toLowerCase

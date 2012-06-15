@@ -26,6 +26,10 @@ import com.yammer.metrics.Metrics
 
 import scala.collection.JavaConversions._
 
+/**
+ * Extend this trait provide accessKeyId, SelectRequest, domain and attribute 
+ * method implementations to have SimpleDB based lookup.
+ */
 trait SimpleDbLookup extends Lookup {
 
   // SimpleDB credentials

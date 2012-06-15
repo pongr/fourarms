@@ -19,11 +19,21 @@ package com.pongr.fourarms.mailet
 import org.apache.mailet._
 import com.yammer.metrics.reporting.GraphiteReporter
 
+/**
+ * Enables metrics-graphite module to report to the graphite server defined by the parameters.
+ */
 class GraphiteReporterMailet extends PongrMailet {
 
+  /** The graphite server host */
   lazy val host = getInitParameter("host")
+
+  /** The graphite server port. Default value is 2003 */
   lazy val port = getInitParameter("port", "2003").toInt
+
+  /** The  period. Default value is 1 */
   lazy val period = getInitParameter("period", "1").toInt
+
+  /** The  period. Default value is minutes */
   lazy val timeUnit = getTimeUnit(getInitParameter("timeUnit", "minutes"))
 
   override def init() {
@@ -31,8 +41,8 @@ class GraphiteReporterMailet extends PongrMailet {
     log("Enabled GraphiteReporter to report to %s:%d every %d %s" format (host, port, period, timeUnit))
   }
 
+  /** Do nothing in service method. */
   override def service(mail: Mail) {
-    // do nothing
   }
 
 }

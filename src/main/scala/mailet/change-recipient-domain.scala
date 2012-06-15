@@ -19,6 +19,10 @@ package com.pongr.fourarms.mailet
 import org.apache.mailet._
 import scala.collection.JavaConversions._
 
+/**
+ * A mailet that changes a matching recipient domain on the Mail object, so that matchers and mailets 
+ * further down the processing chain will see the new recipient address instead of old one.
+ */
 class ChangeRecipientDomain extends PongrMailet {
   lazy val oldDomain = getInitParameter("oldDomain").trim.toLowerCase
   lazy val newDomain = getInitParameter("newDomain").trim.toLowerCase
