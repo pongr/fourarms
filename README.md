@@ -91,7 +91,7 @@ Fourarms is a small project based on [Apache James](http://james.apache.org), pr
 
 * AMPQ mailet
 
-  Serializes received emails and send over AMQP server.
+  Serializes received emails and sends to AMQP server.
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.AmqpMailet">
       <serializer>com.pongr.fourarms.serializer.DefaultSerializer</serializer>
