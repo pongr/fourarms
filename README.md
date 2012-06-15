@@ -2,16 +2,26 @@
 
 Fourarms is a small project based on [Apache James](http://james.apache.org), provides a collection of useful mailets and matchers.
 
-## sbt
+## Install
 
+### sbt 
 ```scala
 // Fourarms is available at https://oss.sonatype.org/
-val fourarms = "com.pongr" %% "fourarms" % "0.1-SNAPSHOT"
+"com.pongr" %% "fourarms" % "0.1-SNAPSHOT"
+
 ```
 
-## Usage
+### Maven
 
-### Matchers
+```xml
+<dependency>
+    <groupId>com.pongr</groupId>
+    <artifactId>fourarms_2.9.1</artifactId>
+    <version>0.1-SNAPSHOT</version>
+</dependency>
+```
+
+###Matchers
 
 * SenderIsInLookup
 
