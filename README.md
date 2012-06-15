@@ -122,4 +122,4 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
 
 ## License
 
-Grey Matter is licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.txt).
+Fourarms is licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.txt).

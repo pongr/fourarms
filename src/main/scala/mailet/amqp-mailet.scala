@@ -18,7 +18,6 @@ class AmqpMailet extends PongrMailet with FromMethods {
   lazy val password = getInitParameter("password")
   lazy val vhost = getInitParameter("vhost")
   lazy val exchange = getInitParameter("exchange")
-  // lazy val queue = getInitParameter("queue")
   lazy val routingKey = getInitParameter("routing-key")
   lazy val exchangeType = getInitParameter("exchangeType", "direct")
 
@@ -57,10 +56,6 @@ class AmqpMailet extends PongrMailet with FromMethods {
     log("Saved bytes to %s" format file)
 
     val channel = conn.createChannel()
-
-    // a durable, non-exclusive, non-autodelete queue
-    // channel.queueDeclare(queue, true, false, false, null)
-    // channel.queueBind(queue, exchange, routingKey)
 
     log("Sending (From: %s, Name: %s) to AMQP(VHost: %s, exchange: %s)." format (getFromEmail(mail), mail.getName, vhost, exchange))
     channel.basicPublish(exchange, routingKey, null, bytes)
