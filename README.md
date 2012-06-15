@@ -26,7 +26,7 @@ Fourarms is a small project based on [Apache James](http://james.apache.org), pr
 
   If the sender of a received email exists it transfers the email to the processor provided by the parameter. It uses Lookup trait to to check if the sender is in the lookup. So you'll have to provide an implementation of Lookup trait.
 
-  Lookup trait is simple as:
+  Lookup trait is as simple as:
   ```scala
   trait Lookup {
       def exist_?(element: String): Boolean
