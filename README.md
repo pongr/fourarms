@@ -10,6 +10,8 @@ A collection of Scala-based mailets and matchers for Apache James [Apache James]
 "com.pongr" %% "fourarms" % "0.1-SNAPSHOT"
 ```
 
+## Usage
+
 ### Maven
 
 ```xml
