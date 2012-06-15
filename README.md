@@ -79,7 +79,7 @@ Fourarms is a small project based on [Apache James](http://james.apache.org), pr
 
 * SenderDomainIsInLookup
 
-  Similiar to SenderIsInLookup but tests the sender domain of received emails. Let's say we have an email sent from **sender@domain.com**. SenderDomainIsInLookup will test **domain.com** against the lookup where SenderIsInLookup would test **sender@domain.com**.
+  Similiar to SenderIsInLookup but tests the sender domain of received emails. Let's say we have an email sent from sender@domain.com. SenderDomainIsInLookup will test **domain.com** against the lookup where SenderIsInLookup would test sender@domain.com.
 
   ```xml
   <mailet match="com.pongr.fourarms.matcher.SenderDomainIsInLookup=org.domain.SpamSenderDomainLookup" class="ToProcessor">
