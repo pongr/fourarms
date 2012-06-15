@@ -14,6 +14,7 @@ val fourarms = "com.pongr" %% "fourarms" % "0.1-SNAPSHOT"
 ### Matchers
 
 * SenderIsInLookup
+
   If the sender of a received email exist in the provided lookup transfers the email to the processor provided with parameter.
   ```xml
   <mailet match="com.pongr.fourarms.matcher.SenderIsInLookup=org.domain.SpamSenderLookup" class="ToProcessor">
@@ -32,6 +33,7 @@ val fourarms = "com.pongr" %% "fourarms" % "0.1-SNAPSHOT"
   ```
 
 * RecipientIsInLookup
+
   Similiar to SenderIsInLookup but tests the recipient of received emails.
   ```xml
   <mailet match="com.pongr.fourarms.matcher.RecipientIsInLookup=org.domain.RecipientLookup" class="ToProcessor">
@@ -40,6 +42,7 @@ val fourarms = "com.pongr" %% "fourarms" % "0.1-SNAPSHOT"
   ```
 
 * DomainIsInLookup
+
   Similiar to SenderIsInLookup but tests the domain of received emails.
   ```xml
   <mailet match="com.pongr.fourarms.matcher.DomainIsInLookup=org.domain.SpamDomainLookup" class="ToProcessor">
@@ -52,6 +55,7 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
 ### Mailets
 
 * Rabbit AMPQ mailet
+
   Serializes received emails and send over RabbitMQ.
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.AmqpMailet">
@@ -70,6 +74,7 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
   Note that the exchange is durable.
 
 * Meter mailet
+
   Measures various received email rates. Creates [Yammer Meter] (http://metrics.codahale.com/maven/apidocs/com/yammer/metrics/core/Meter.html) and calls mark() in its service method. 
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.MeterMailet">
@@ -83,6 +88,7 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
   ```
 
 * GraphiteReporter mailet
+
   Enables [metrics-graphite](http://metrics.codahale.com/manual/graphite/) module to report to the provided server.
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.GraphiteReporterMailet">
@@ -92,12 +98,10 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
       <timeUnit>minutes</timeUnit>
   </mailet>
   ```
-  Default values:
-    port: 2003
-    period: 1
-    timeUnit: minutes
+  Default values: port=2003, period=1, timeUnit=minutes
 
 * ChangeRecipient mailet
+
   Rewrites x@pongr.com to y@pongr.com before sending to web service.
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.ChangeRecipient">
@@ -107,6 +111,7 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
   ```
 
 * ChangeRecipientDomain
+
   Rewrites old.com to new.com before sending to web service.
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.ChangeRecipientDomain">
