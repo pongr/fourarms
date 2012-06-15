@@ -4,7 +4,7 @@ Fourarms provides a collection of useful mailets and matchers.
 
 ## sbt
 
-``` scala
+```scala
 // Fourarms is available at https://oss.sonatype.org/
 val fourarms = "com.pongr" %% "fourarms" % "0.1-SNAPSHOT"
 ```
@@ -14,21 +14,21 @@ val fourarms = "com.pongr" %% "fourarms" % "0.1-SNAPSHOT"
 ### Matchers
 
 * SenderIsInFile
-  ```xml 
+  ```xml
   <mailet match="SenderIsInLookup=org.domain.SenderLookup" class="ToProcessor">
       <processor>reject</processor>
   </mailet>
 ```
 
 * RecipientIsInLookup
-  ```xml 
+  ```xml
   <mailet match="RecipientIsInLookup=org.domain.RecipientLookup" class="ToProcessor">
       <processor>reject</processor>
   </mailet>
   ```
 
 * DomainIsInFile
-  ```xml 
+  ```xml
   <mailet match="DomainIsInLookup=org.domain.DomainLookup" class="ToProcessor">
       <processor>reject</processor>
   </mailet>
