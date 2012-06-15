@@ -92,7 +92,7 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
   Enables [metrics-graphite](http://metrics.codahale.com/manual/graphite/) module to report to the provided server.
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.GraphiteReporterMailet">
-      <host>domU-12-31-39-16-BC-B7.compute-1.internal</host>
+      <host>graphite.domain.org</host>
       <port>2003</port>
       <period>1</period>
       <timeUnit>minutes</timeUnit>
@@ -112,7 +112,7 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
 
 * ChangeRecipientDomain
 
-  Rewrites old.com to new.com before sending to web service.
+  Rewrites the recipient domain of emails before sending to web service.
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.ChangeRecipientDomain">
       <oldDomain>fourarm.pongrdev.com</oldDomain>
