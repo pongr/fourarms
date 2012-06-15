@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2012 Pongr, Inc.
+ *   
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.pongr.fourarms.mailet
 
 import org.apache.mailet._
@@ -5,32 +21,57 @@ import org.apache.mailet.base._
 import com.rabbitmq.client._
 import org.apache.commons.lang.StringUtils.isBlank
 
-
 import com.pongr.fourarms.util._
 import com.pongr.fourarms.serializer._
 
+
+/**
+ * AMQP mailet serializes incoming emails and sends to AMQP server. 
+ */
 class AmqpMailet extends PongrMailet with FromMethods {
 
   lazy val serializerName = getInitParameter("serializer").trim
+
+  /** AMQP server host */
   lazy val host = getInitParameter("host")
+
+  /** AMQP server port */
   lazy val port = getInitParameter("port")
+
+  /** username */
   lazy val username = getInitParameter("username")
+
+  /** password */
   lazy val password = getInitParameter("password")
+
+  /** AMQP virtual host */
   lazy val vhost = getInitParameter("vhost")
+
+  /** AMQP exchange name. */
   lazy val exchange = getInitParameter("exchange")
+
+  /** AMQP routing key */
   lazy val routingKey = getInitParameter("routing-key")
+
+  /** AMQP exchange type */
   lazy val exchangeType = getInitParameter("exchangeType", "direct")
 
+  /** AMQP boolean value to define wheter to set email state to GHOST or not after it's been sent. */
   lazy val setGhostState_? = getInitParameter("ghost", true)
 
+  /** If it's provided by the parameter creates an instance of that using Reflection.
+    * Otherwise use the default Serializer. 
+    */
   lazy val serializer = if (isBlank(serializerName))
                           new DefaultSerializer 
                         else
                           Class.forName(serializerName).newInstance().asInstanceOf[Serializer]
                           
+  /** URI, where AMQP credentials will be validated. */
   lazy val uri = "amqp://%s:%s@%s:%s/%s" format (username, password, host, port, vhost)
   var conn : Connection = _
 
+  /** Creates amqp connection and declares channel */
   override def init() {
     log("Opening AMQP Connection to %s..." format uri)
     val factory = new ConnectionFactory()
@@ -44,9 +85,10 @@ class AmqpMailet extends PongrMailet with FromMethods {
     channel.close()
   }
 
+  /** Serializes email and send to AMQP server */
   override def service(mail: Mail) {
 
-    // serialize
+    // serialize 
     val bytes = serializer.serialize(mail)
     
     import java.io._
@@ -67,6 +109,7 @@ class AmqpMailet extends PongrMailet with FromMethods {
 
   }
 
+  /** Close the AMQP connection */
   override def destroy() {
     conn.close()
     log("Closed AMQP Connection to %s" format uri)
