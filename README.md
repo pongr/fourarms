@@ -27,8 +27,8 @@ val fourarms = "com.pongr" %% "fourarms" % "0.1-SNAPSHOT"
 
   import com.pongr.fourarms.matcher.Lookup
   class SpamSenderLookup extends Lookup {
-    val emails = List("spammer@test.com", "spam@test.com", "nogood@test.com")
-    def exist_?(e: String) =  contains e
+      val emails = List("spammer@test.com", "spam@test.com")
+      def exist_?(e: String) =  contains e
   }
   ```
 
@@ -60,7 +60,7 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.AmqpMailet">
       <serializer>com.pongr.fourarms.serializer.DefaultSerializer</serializer>
-      <host>rabbitmq.pongrdev.com</host>
+      <host>rabbitmq.domain.org</host>
       <port>5672</port>
       <vhost>test</vhost>
       <username>testuser</username>
@@ -105,8 +105,8 @@ Note that SpamSenderLookup, RecipientLookup and SpamDomainLookup classes have to
   Rewrites x@pongr.com to y@pongr.com before sending to web service.
   ```xml
   <mailet match="All" class="com.pongr.fourarms.mailet.ChangeRecipient">
-      <oldRecipient>x@fourarms.pongrdev.com</oldRecipient>
-      <newRecipient>y@fourarms.pongrdev.com</newRecipient>
+      <oldRecipient>x@domain.org</oldRecipient>
+      <newRecipient>y@domain.org</newRecipient>
   </mailet>
   ```
 
