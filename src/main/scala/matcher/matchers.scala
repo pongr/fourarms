@@ -45,7 +45,7 @@ trait ElementsFromLookup { this: Matcher =>
 }
 
 /**
- * If the recipient of a received email exists in the lookup it transfers the email to the processor provided by the parameter. 
+ * Matches if the recipient of a received email exists in the lookup specified in the condition.
  * James xml config:
  *
  * {{{
@@ -70,7 +70,7 @@ class RecipientIsInLookup extends GenericRecipientMatcher with ElementsFromLooku
 }
 
 /**
- * If the sender of a received email exists it transfers the email to the processor provided by the parameter. 
+ * Matches if the sender of a received email exists in the lookup specified in the condition.
  * James xml config:
  *
  * {{{
@@ -94,11 +94,10 @@ class SenderIsInLookup extends GenericMatcher with FromMethods with ElementsFrom
 }
 
 /**
- * If the sender domain of a received email exists it transfers the email to the processor provided by the parameter. 
- * Matches if sender is in the file specified in the condition. 
+ * Matches if sender domain is in the lookup specified in the condition. 
+ * James xml config:
  *
  * {{{
- * James xml config:
  *   <mailet match="SenderDomainIsInLookup=com.pongr.fouramrs.matcher.SenderDomainSpamLookup" class="ToProcessor">
  *     <processor>reject</processor>
  *   </mailet>
