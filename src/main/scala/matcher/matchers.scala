@@ -35,10 +35,10 @@ trait Lookup {
  */
 trait ElementsFromLookup { this: Matcher => 
 
-  lazy val lookupClassName = getMatcherConfig.getCondition
+  private lazy val lookupClassName = getMatcherConfig.getCondition
 
   // Creating an instance of the lookup
-  lazy val lookupInstance: Lookup = Class.forName(lookupClassName).newInstance.asInstanceOf[Lookup]
+  private lazy val lookupInstance: Lookup = Class.forName(lookupClassName).newInstance.asInstanceOf[Lookup]
 
   def exist_?(e: String) = lookupInstance.exist_?(e)
 
@@ -47,9 +47,12 @@ trait ElementsFromLookup { this: Matcher =>
 /**
  * If the recipient of a received email exists in the lookup it transfers the email to the processor provided by the parameter. 
  * James xml config:
+ *
+ * {{{
  *   <mailet match="RecipientIsInLookup=com.pongr.fouramrs.matcher.RecipientLookup" class="ToProcessor">
  *     <processor>relay</processor>
  *   </mailet>
+ * }}}
  */
 class RecipientIsInLookup extends GenericRecipientMatcher with ElementsFromLookup {
 
@@ -69,9 +72,12 @@ class RecipientIsInLookup extends GenericRecipientMatcher with ElementsFromLooku
 /**
  * If the sender of a received email exists it transfers the email to the processor provided by the parameter. 
  * James xml config:
+ *
+ * {{{
  *   <mailet match="SenderIsInLookup=com.pongr.fouramrs.matcher.SenderSpamLookup" class="ToProcessor">
  *     <processor>reject</processor>
  *   </mailet>
+ * }}}
  */
 class SenderIsInLookup extends GenericMatcher with FromMethods with ElementsFromLookup {
 
@@ -90,10 +96,13 @@ class SenderIsInLookup extends GenericMatcher with FromMethods with ElementsFrom
 /**
  * If the sender domain of a received email exists it transfers the email to the processor provided by the parameter. 
  * Matches if sender is in the file specified in the condition. 
+ *
+ * {{{
  * James xml config:
  *   <mailet match="SenderDomainIsInLookup=com.pongr.fouramrs.matcher.SenderDomainSpamLookup" class="ToProcessor">
  *     <processor>reject</processor>
  *   </mailet>
+ * }}}
  */
 class SenderDomainIsInLookup extends GenericMatcher with FromMethods with ElementsFromLookup {
 

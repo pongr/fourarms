@@ -19,8 +19,9 @@ package com.pongr.fourarms.mailet
 import org.apache.mailet._
 import com.yammer.metrics.reporting.GraphiteReporter
 
-/**
- * Enables metrics-graphite module to report to the graphite server defined by the parameters.
+/** 
+ * Enables [[http://metrics.codahale.com/manual/graphite/ GraphiteReporter]] in the init() method, 
+ * to report to the graphite server defined by the parameters.
  */
 class GraphiteReporterMailet extends PongrMailet {
 
