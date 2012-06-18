@@ -19,9 +19,6 @@ package com.pongr.fourarms.mail
 import org.apache.mailet._
 import javax.mail.internet._
 
-/**
- * MimeMessage wrapper
- */
 object PongrMail {
 
   def apply(m: Mail): PongrMail = 
@@ -29,6 +26,9 @@ object PongrMail {
 
 }
 
+/**
+ * MimeMessage wrapper
+ */
 case class PongrMail(sender: MailAddress, 
                      recipients: java.util.Collection[_],
                      remoteHost: String,

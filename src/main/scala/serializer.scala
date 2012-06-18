@@ -38,7 +38,7 @@ trait Deserializer {
 }
 
 /** 
-  * Default implementation of Serialize and Deserializer traits.
+  * Default implementation of Serializer and Deserializer traits.
   */
 class DefaultSerializer extends Serializer with Deserializer {
   def serialize(mail: PongrMail): Array[Byte] = {

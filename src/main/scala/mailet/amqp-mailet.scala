@@ -38,10 +38,10 @@ class AmqpMailet extends PongrMailet with FromMethods {
   /** AMQP server port */
   lazy val port = getInitParameter("port")
 
-  /** username */
+  /** AMPQ server username */
   lazy val username = getInitParameter("username")
 
-  /** password */
+  /** AMPQ server password */
   lazy val password = getInitParameter("password")
 
   /** AMQP virtual host */
@@ -59,8 +59,9 @@ class AmqpMailet extends PongrMailet with FromMethods {
   /** AMQP boolean value to define wheter to set email state to GHOST or not after it's been sent. */
   lazy val setGhostState_? = getInitParameter("ghost", true)
 
-  /** If it's provided by the parameter creates an instance of that using Reflection.
-    * Otherwise use the default Serializer. 
+  /** 
+    * Serializer. If it's provided by the parameter it creates an instance of that using Reflection.
+    * Otherwise uses the default Serializer. 
     */
   lazy val serializer = if (isBlank(serializerName))
                           new DefaultSerializer 
@@ -109,7 +110,7 @@ class AmqpMailet extends PongrMailet with FromMethods {
 
   }
 
-  /** Close the AMQP connection */
+  /** Closes AMQP connection */
   override def destroy() {
     conn.close()
     log("Closed AMQP Connection to %s" format uri)

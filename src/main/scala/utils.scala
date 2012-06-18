@@ -22,12 +22,15 @@ import javax.mail.internet.InternetAddress
 import org.apache.commons.lang.StringUtils.isBlank
 
 /**
- * Provides useful methods to extract different kind of information from Mail object.
+ * Provides few useful methods to extract different kind of information from Mail object.
  */
 trait FromMethods {
 
   def defaultLastName = "X"
 
+  /**
+   * Returns (email, (first, last))
+   */
   def getFrom(mail: Mail): (String, Option[(String, String)]) = {
     val from = getFromEmail(mail)
     val fromName = getFromName(mail)
@@ -69,6 +72,9 @@ trait FromMethods {
   //Last, First
   //First Last
   //First
+  /**
+   * Returns (firstName, lastName)
+   */
   def getFromName(mail: Mail): Option[(String, String)] = {
     val LastFirst = """(.+?),\s*(.+)""".r
     val FirstLast = """(.+?)\s+(.+)""".r
