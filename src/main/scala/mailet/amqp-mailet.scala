@@ -92,11 +92,11 @@ class AmqpMailet extends PongrMailet with FromMethods {
     // serialize 
     val bytes = serializer.serialize(mail)
     
-    import java.io._
+    /*import java.io._
     import org.apache.commons.io._
     val file = File.createTempFile("serializedMail", "")
     FileUtils.writeByteArrayToFile(file, bytes)
-    log("Saved bytes to %s" format file)
+    log("Saved bytes to %s" format file)*/
 
     val channel = conn.createChannel()
 
