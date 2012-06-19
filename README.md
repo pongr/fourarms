@@ -101,7 +101,17 @@ Similiar to SenderIsInLookup but tests the sender domain of received emails. Let
 
 #### AmqpMailet
 
-Serializes received emails and sends to AMQP server.
+Serializes received emails and sends to AMQP server. Fourarms provides DefaultSerializer that uses Java's native serialization. You can use your custom serializer by implementing Serializer and Deserializer traits.
+
+```scala
+trait Serializer {
+    def serialize(m: PongrMail): Array[Byte]
+}
+
+trait Deserializer {
+    def deserialize(b: Array[Byte]): PongrMail
+}
+```
 
 ```xml
 <mailet match="All" class="com.pongr.fourarms.mailet.AmqpMailet">
@@ -119,8 +129,6 @@ Serializes received emails and sends to AMQP server.
 ```
 
 Note that the exchange is durable.
-
-TODO documentation for Serializer and DefaultSerializer.
 
 #### MeterMailet
 
