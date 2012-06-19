@@ -6,8 +6,7 @@ A collection of Scala-based mailets and matchers for Apache James [Apache James]
 
 ### sbt 
 ```scala
-// Fourarms is available at https://oss.sonatype.org/
-"com.pongr" %% "fourarms" % "0.1-SNAPSHOT"
+"com.pongr" %% "fourarms" % "0.1"
 ```
 
 ### Maven
@@ -24,51 +23,58 @@ A collection of Scala-based mailets and matchers for Apache James [Apache James]
 
 ### Matchers
 
-* SenderIsInLookup
+#### Lookups
 
-  If the sender of a received email exists it transfers the email to the processor provided by the parameter. It uses Lookup trait to to check if the sender is in the lookup. So you'll have to provide an implementation of Lookup trait.
+We've found many cases where we want to process a mail with a specific mailet only when some attribute of that mail is contained in some collection. For example, ignoring a mail if the sender is in a list of known spammer addresses, or relaying the mail to another mail server if the recipient is in some special list.
 
-  Lookup trait is as simple as:
-  ```scala
-  trait Lookup {
-      def exist_?(element: String): Boolean
-  }
-  ```
-  A simple way to implement Lookup trait is hard-coding the emails.
+Fourarms provides the Lookup trait that abstracts away the specifics of storing and querying this collection:
 
-  ```scala
-  package org.domain
+```scala
+trait Lookup {
+  def exist_?(element: String): Boolean
+}
+```
 
-  import com.pongr.fourarms.matcher.Lookup
-  class HardCodedSpamSenderLookup extends Lookup {
-      val emails = List("spammer@test.com", "spam@test.com")
-      def exist_?(e: String) =  contains e
-  }
-  ```
+A simple way to implement Lookup trait is hard-coding the emails.
 
-  And in James xml confuguration it would go like:
-  ```xml
-  <mailet match="com.pongr.fourarms.matcher.SenderIsInLookup=org.domain.HardCodedSpamSenderLookup" class="ToProcessor">
-      <processor>reject</processor>
-  </mailet>
-  ```
-  Fourarms also has SimpleDB lookup trait that extends Lookup trait. Here is an usage of that:
+```scala
+package org.domain
 
-  ```scala
-  class SimpleDbSpamSenderLookup extends SimpleDbLookup {
-    val accessKeyId = "simpledb access key id"
-    val secretAccessKey = "simpledb secret access key"
-    val domain = "simple domain"
-    val attribute = "spammerEmail"
-  }
-  ```
+import com.pongr.fourarms.matcher.Lookup
+class HardCodedSpamSenderLookup extends Lookup {
+  val emails = List("spammer@test.com", "spam@test.com")
+  def exist_?(e: String) =  contains e
+}
+```
 
-  James xml configuration:
-  ```xml
-  <mailet match="com.pongr.fourarms.matcher.SenderIsInLookup=org.domain.SimpleDbSpamSenderLookup" class="ToProcessor">
-      <processor>reject</processor>
-  </mailet>
+Fourarms also has SimpleDB lookup trait that extends Lookup trait. You just extend SimpleDbLookup and provide several values. To lookup the value, it executes a query like ```select count(*) from <domain> where <attribute>=<value>```. Here is an example usage of it:
 
+```scala
+class SimpleDbSpamSenderLookup extends SimpleDbLookup {
+  val accessKeyId = "simpledb access key id"
+  val secretAccessKey = "simpledb secret access key"
+  val domain = "simple domain"
+  val attribute = "spammerEmail"
+}
+```
+
+Fourarms then provides several matchers that test if a specific mail attribute is contained in a Lookup implementation. These are documented below. In each case, the Lookup implementation is provided as the matcher's config parameter (after the equal sign) such as:
+
+```xml
+<mailet match="com.pongr.fourarms.matcher.SenderIsInLookup=org.domain.HardCodedSpamSenderLookup" class="ToProcessor">
+  <processor>reject</processor>
+</mailet>
+```
+
+#### SenderIsInLookup
+
+If the sender of a received email exists it transfers the email to the specified mailet. It uses the Lookup trait to check if the sender is in the lookup. So you'll have to provide an implementation of Lookup trait as the matcher's config parameter (after the equal sign).
+  
+```xml
+<mailet match="com.pongr.fourarms.matcher.SenderIsInLookup=org.domain.SimpleDbSpamSenderLookup" class="ToProcessor">
+  <processor>reject</processor>
+</mailet>
+```
 
 * RecipientIsInLookup
 
