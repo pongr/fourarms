@@ -18,6 +18,8 @@ package com.pongr.fourarms.mailet
 
 import org.apache.mailet._
 import scala.collection.JavaConversions._
+import javax.mail.Message.RecipientType
+import javax.mail.internet.InternetAddress
 
 /**
  * A mailet that changes a matching recipient domain on the Mail object, so that matchers and mailets 
@@ -38,7 +40,16 @@ class ChangeRecipientDomain extends PongrMailet {
         r
     }
     mail.setRecipients(rs2)
+
+    /*
+    for (recipientType <- List(RecipientType.TO, RecipientType.CC, RecipientType.BCC)) {
+      val newAddrs: Array[javax.mail.Address] = mail.getMessage.getRecipients(recipientType).map { addr =>
+        new InternetAddress(addr.toString.replace(oldDomain, newDomain))
+      }
+      mail.getMessage.setRecipients(recipientType, newAddrs)
+    } 
+    */
+
   }
 
 }
-

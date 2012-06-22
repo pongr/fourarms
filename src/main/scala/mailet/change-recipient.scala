@@ -19,6 +19,8 @@ package com.pongr.fourarms.mailet
 
 import org.apache.mailet._
 import scala.collection.JavaConversions._
+import javax.mail.Message.RecipientType
+import javax.mail.internet.InternetAddress
 
 /**
  * A mailet that changes a matching recipient on the Mail object, so that matchers and mailets 
@@ -38,6 +40,19 @@ class ChangeRecipient extends PongrMailet {
         r
     }
     mail.setRecipients(rs2)
+
+    /*
+    for (recipientType <- List(RecipientType.TO, RecipientType.CC, RecipientType.BCC)) {
+      val newAddrs = mail.getMessage.getRecipients(recipientType).map { addr =>
+        if (oldRecipient == addr.toString.trim.toLowerCase)
+          new InternetAddress(newRecipient)
+        else
+          addr
+      }
+      mail.getMessage.setRecipients(recipientType, newAddrs)
+    }
+    */
+
   }
 }
 
