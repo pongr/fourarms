@@ -13,7 +13,7 @@ import org.apache.commons.io._
   * </mailet>
   * }}}
   */
-class SerializeMimeMessge extends PongrMailet {
+class SerializeMimeMessage extends PongrMailet {
   /** Prefix of the temporary file. Required. See java.io.File.createTempFile for details. */
   lazy val prefix = getInitParameter("prefix")
   
