@@ -1,0 +1,42 @@
+Received: from na3sys009aog115.obsmtp.com ([74.125.149.238])
+          by domU-12-31-39-06-ED-92 (JAMES SMTP Server ) with SMTP ID 6354814
+          for <html@fourarms.pongrdev.com>;
+          Fri, 22 Jun 2012 21:20:46 +0000 (UTC)
+Received: from mail-gh0-f182.google.com ([209.85.160.182]) (using TLSv1) by na3sys009aob115.postini.com ([74.125.148.12]) with SMTP
+	ID DSNKT+Th0LkChDOcwtsk+IHrLnh7Z8X2O06n@postini.com; Fri, 22 Jun 2012 14:21:21 PDT
+Received: by ghbz22 with SMTP id z22so1950287ghb.41
+        for <html@fourarms.pongrdev.com>; Fri, 22 Jun 2012 14:21:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type
+         :x-gm-message-state;
+        bh=q5LBGjL71Xh8ybW94KB3xJ7U4mpQZsFQPKqqDucsrEE=;
+        b=K/aOQiqlxXxBXTfEYLjS2UrAZS0G/Le8ZgArBDJKxMoglp+GHzsNpC3nXjpAyQZKLb
+         eqfhWIaqmND4ntGBik/sBahy+nvq5bL1x6B/9XpShTKPpNgq03vXNpG/CoJtGsZRKqie
+         qjUr6wqFpODlow9CSPb9tfOvwY/OIcsxHVCsYZBKTbiMeiySDzTDTJ92Ij5Bf4YynkZj
+         eiRdzcmYvEYOUq0tuEKNPiukYBDb8+vqtGfqO2qNAGyQzSDyE6ZtVBzPFugHYbWczs84
+         I/FfDkVeP7cjUibrAtA2DIBjOalQypP+3aH2qObCXUkg8hzXsab3o4o10xAeFCsiZe5G
+         ttRw==
+MIME-Version: 1.0
+Received: by 10.50.187.169 with SMTP id ft9mr2945056igc.16.1340400079100; Fri,
+ 22 Jun 2012 14:21:19 -0700 (PDT)
+Received: by 10.231.207.16 with HTTP; Fri, 22 Jun 2012 14:21:19 -0700 (PDT)
+Date: Fri, 22 Jun 2012 16:21:19 -0500
+Message-ID: <CAAOxnAvAXBZmE+dpej8DefJuPZ=BZBjUGbFjoav5t5gCZfx0Yw@mail.gmail.com>
+Subject: HTML
+From: Zach Cox <zcox@pongr.com>
+To: html@fourarms.pongrdev.com
+Content-Type: multipart/alternative; boundary=14dae93405759258f204c31636dd
+X-Gm-Message-State: ALoCoQm1pkexWBNcRyrpz3BdJ4jqjSjbFvj0vOxYSQy+AXukfT4FZzERcRAPLMAm8qPMrcHj8uRs
+
+--14dae93405759258f204c31636dd
+Content-Type: text/plain; charset=ISO-8859-1
+
+This is a *rich* *email.*
+
+--14dae93405759258f204c31636dd
+Content-Type: text/html; charset=ISO-8859-1
+
+<font color="#ff0000">This</font> is a <b>rich</b> <i>email.</i>
+
+--14dae93405759258f204c31636dd--

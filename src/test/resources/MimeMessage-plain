@@ -1,0 +1,32 @@
+Received: from na3sys009aog103.obsmtp.com ([74.125.149.71])
+          by domU-12-31-39-06-ED-92 (JAMES SMTP Server ) with SMTP ID 441391
+          for <plaintext@fourarms.pongrdev.com>;
+          Fri, 22 Jun 2012 21:19:09 +0000 (UTC)
+Received: from mail-yw0-f48.google.com ([209.85.213.48]) (using TLSv1) by na3sys009aob103.postini.com ([74.125.148.12]) with SMTP
+	ID DSNKT+ThbQFtnJ1lSVx1inWzPVT492DvSxVH@postini.com; Fri, 22 Jun 2012 14:19:43 PDT
+Received: by yhfq46 with SMTP id q46so2208462yhf.21
+        for <plaintext@fourarms.pongrdev.com>; Fri, 22 Jun 2012 14:19:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type
+         :x-gm-message-state;
+        bh=BPdJeL4oPxv2q5zDt7MRVTfIfwHK3cLxRuv+48ZtkM8=;
+        b=U4DRkvqT8aeYy2Ru4QJxtaRCMl4riu3yl4YaLivzhO3jH5ytKgkQqlBNNVyz2jnl4n
+         /PDRRzlA7EXJRPU31lO0FdXgJc25ArfcymDcjc0tFftJE/u3LaBOPqnQ6DZ1/YHH+v7H
+         2w5wR3xDoTxrSDinAMQte6H58vhIxlwGXOcwp6l/xuQra87CtE+YhbuHBXDUoC1W2zAo
+         fR5MTn1Pwsl6XIDzLVYsU2sIxNretr3UD7p8PPKUAMhtaiYkKcxfuW8dZtP3sKXAL2IF
+         7R+Ve+awdYxAWvQg/N8tJkDGnpQ6xjEPaeAxTH4BNIQRasM4DuN2xsYhjQyOF9Af03cp
+         Wt+A==
+MIME-Version: 1.0
+Received: by 10.50.236.71 with SMTP id us7mr2942711igc.16.1340399980560; Fri,
+ 22 Jun 2012 14:19:40 -0700 (PDT)
+Received: by 10.231.207.16 with HTTP; Fri, 22 Jun 2012 14:19:40 -0700 (PDT)
+Date: Fri, 22 Jun 2012 16:19:40 -0500
+Message-ID: <CAAOxnAukE9cg7d8KHuJ19G8uCaK3HfQUyFZqbyz22_sE9Xv9ZQ@mail.gmail.com>
+Subject: Plaintext
+From: Zach Cox <zcox@pongr.com>
+To: plaintext@fourarms.pongrdev.com
+Content-Type: text/plain; charset=ISO-8859-1
+X-Gm-Message-State: ALoCoQkzofzjQp1hsdzW758mXZBLC4CsIKT5JcNzRg05luInFLI9uWj6sMvydt3aojh2Y8y9Tjb5
+
+This is a simple plaintext email.
