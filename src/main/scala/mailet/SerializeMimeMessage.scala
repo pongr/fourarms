@@ -21,17 +21,19 @@ class SerializeMimeMessage extends PongrMailet {
   lazy val suffix = getInitParameter("suffix")
   
   /** Directory of the temporary file. Omit to use default. See java.io.File.createTempFile for details. */
-  lazy val directory = new File(getInitParameter("directory"))
+  lazy val directory = getInitParameter("directory")
+  private lazy val dir = if (directory == null) null else new File(directory)
 
   override def service(mail: Mail) {
     try {
-      val file = File.createTempFile(prefix, suffix, directory)
+      val file = File.createTempFile(prefix, suffix, dir)
+      log("Serializing mail %s to %s..." format (mail.getName, file))
       val os = new FileOutputStream(file)
       mail.getMessage.writeTo(os)
       os.close()
       log("Serialized mail %s to %s" format (mail.getName, file))
     } catch {
-      case t: Throwable => log("Error trying to serialize MimeMessage: " + t.getMessage)
+      case t: Throwable => log("Error trying to serialize MimeMessage", t)
     }
   }
 }
