@@ -47,6 +47,16 @@ class SerializerSpec extends Specification {
 
   def isEqual(m1: PongrMail, m2: PongrMail): Boolean = {
 
+    val test = m1.message.getContent.asInstanceOf[MimeMultipart].getBodyPart(1)
+    println("------------------------")
+    val headers = test.getAllHeaders
+    while(headers.hasMoreElements) {
+      val e = headers.nextElement.asInstanceOf[javax.mail.Header]
+      println(e)
+      // println(e.getName + " ::: " + e.getValue)
+    }
+    println("------------------------")
+
     val i1 = m1.message.getContent.asInstanceOf[MimeMultipart].getBodyPart(1).getInputStream
     val i2 = m2.message.getContent.asInstanceOf[MimeMultipart].getBodyPart(1).getInputStream
     val txt1 = m1.message.getContent.asInstanceOf[MimeMultipart].getBodyPart(0).getContent
