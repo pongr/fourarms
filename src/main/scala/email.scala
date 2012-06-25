@@ -30,6 +30,7 @@ object EmailAddress extends FromMethods {
 
   def apply(s: String): EmailAddress = EmailAddress(new MailAddress(s))
 
+  // TODO: 
   def apply(addr: MailAddress): EmailAddress = if (addr != null) {
     val names = getFromName(addr.getLocalPart)
     EmailAddress(addr.getLocalPart, addr.getDomain, names.map(_._1), names.map(_._2))
@@ -37,6 +38,14 @@ object EmailAddress extends FromMethods {
 
 }
 
+
+/**
+ * Represents an email address.
+ * @param localPart username from "username@host.com".
+ * @param domain domain without "@". For example: pongr.com
+ * @param firstName First name
+ * @param lastName  Last name
+ */
 case class EmailAddress(
   localPart: String,
   domain: String,
@@ -46,9 +55,18 @@ case class EmailAddress(
   val address: String = "%s@%s" format (localPart, domain)
 }
 
+/**
+ * Representation of the message's part.
+ * @param contentType "Content-Type" header field.
+ * @param data Array[Byte] representation of this part's content.
+ * @param fileName "filename" parameter from the "Content-Disposition" header field of this part.
+ * @param description "Content-Description" header field.
+ * @param disposition "Content-Disposition" header field. 
+ * @param headers All headers associated with this part.
+ */
 case class EmailPart(
-  contentType: String,        // image/jpeg, text/html, text/plain...
-  data: Array[Byte],          // image data, String,    String...
+  contentType: String,        
+  data: Array[Byte],          
   fileName: Option[String],   // TODO just use headers instead of fileName, description & disposition fields?
   description: Option[String],
   disposition: Option[String],
