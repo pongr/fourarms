@@ -17,6 +17,7 @@
 package com.pongr.fourarms.mail
 
 import org.apache.mailet._
+import javax.mail.Multipart
 import javax.mail.Header
 import javax.mail.internet._
 import javax.mail.{ Part, Multipart }
@@ -25,15 +26,14 @@ import org.apache.commons.io.IOUtils
 
 import com.pongr.fourarms.util.FromMethods
 
-
 object EmailAddress extends FromMethods {
 
   def apply(s: String): EmailAddress = EmailAddress(new MailAddress(s))
 
-  def apply(addr: MailAddress): EmailAddress = {
-    val names = getFromName(addr.getUser)
+  def apply(addr: MailAddress): EmailAddress = if (addr != null) {
+    val names = getFromName(addr.getLocalPart)
     EmailAddress(addr.getLocalPart, addr.getDomain, names.map(_._1), names.map(_._2))
-  }
+  } else EmailAddress("", "", None, None)
 
 }
 
@@ -44,6 +44,10 @@ case class EmailAddress(
   lastName: Option[String]
 ) {
   val address: String = "%s@%s" format (localPart, domain)
+}
+
+object EmailPart {
+  def apply(s: String): EmailPart = EmailPart("", Array(), None, None, None, Map())
 }
 
 case class EmailPart(
@@ -71,7 +75,8 @@ case class Email(
 object Email {
 
   def apply(m: Mail): Email = {
-    val recipients = m.getRecipients map { addr => EmailAddress(addr.asInstanceOf[MailAddress]) }
+    val recipients = if (m.getRecipients == null) Nil 
+                     else m.getRecipients.map { addr => EmailAddress(addr.asInstanceOf[MailAddress]) }
     Email(EmailAddress(m.getSender),
                        recipients.toList,
                        m.getMessage.getSubject,
@@ -81,20 +86,12 @@ object Email {
                        m.getRemoteAddr)
   }
 
-  def getEmailParts(message: MimeMessage) = {
-    val content = message.getContent
-    if (content.isInstanceOf[Part])
-      getAttachmentPart(content.asInstanceOf[Part])
-    else
-      Nil
-  }
-
-  def getAttachmentPart(part: Part): Seq[EmailPart] = try {
+  def getEmailParts(part: Part): Seq[EmailPart] = try {
     if (part.isMimeType("multipart/*")) {
       val multipart = part.getContent().asInstanceOf[Multipart]
-      var images: Seq[EmailPart] = Nil
-      val attachments = for (i <- 0 until multipart.getCount) {
-        images = images ++ getAttachmentPart(multipart.getBodyPart(i))
+      var images: Seq[EmailPart] = List()
+      for (i <- 0 until multipart.getCount) {
+        images = images ++ getEmailParts(multipart.getBodyPart(i))
       }
       images
     } else {
