@@ -46,10 +46,6 @@ case class EmailAddress(
   val address: String = "%s@%s" format (localPart, domain)
 }
 
-object EmailPart {
-  def apply(s: String): EmailPart = EmailPart("", Array(), None, None, None, Map())
-}
-
 case class EmailPart(
   contentType: String,        // image/jpeg, text/html, text/plain...
   data: Array[Byte],          // image data, String,    String...
@@ -70,13 +66,22 @@ case class Email(
   headers: Map[String, Seq[String]],
   remoteHost: String,
   remoteAddr: String
-)
+) {
+
+  /**
+   * This private field helps the compiler to load EmailPart class 
+   * when it deserializes Seq[EmailPart] using Java's native serialization.
+   */
+  private val email = EmailPart("", Array(), None, None, None, Map())
+
+}
 
 object Email {
 
   def apply(m: Mail): Email = {
     val recipients = if (m.getRecipients == null) Nil 
-                     else m.getRecipients.map { addr => EmailAddress(addr.asInstanceOf[MailAddress]) }
+                     else m.getRecipients.map { a => EmailAddress(a.asInstanceOf[MailAddress]) }
+
     Email(EmailAddress(m.getSender),
                        recipients.toList,
                        m.getMessage.getSubject,
