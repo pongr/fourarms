@@ -75,19 +75,20 @@ trait FromMethods {
   /**
    * Returns (firstName, lastName)
    */
-  def getFromName(mail: Mail): Option[(String, String)] = {
+  def getFromName(mail: Mail): Option[(String, String)] = getFromAddress(mail) match {
+    case Some(address) if !isBlank(address.getPersonal) => 
+      getFromName(address.getPersonal.replaceAll("\"", ""))
+    case _ => None
+  }
+
+  def getFromName(from: String): Option[(String, String)] = {
     val LastFirst = """(.+?),\s*(.+)""".r
     val FirstLast = """(.+?)\s+(.+)""".r
-
-    val names = getFromAddress(mail) match {
-      case Some(address) if !isBlank(address.getPersonal) => 
-        address.getPersonal.replaceAll("\"", "").trim.toLowerCase match {
-          case LastFirst(last, first) => Some((first, last))
-          case FirstLast(first, last) => Some((first, last))
-          case s: String if s contains "@" => None // skip "username@pm.sprint.com" <username@pm.sprint.com>
-          case name: String => Some((name, defaultLastName))
-        }
-      case _ => None
+    val names=  from.replaceAll("\"", "").trim.toLowerCase match {
+      case LastFirst(last, first) => Some((first, last))
+      case FirstLast(first, last) => Some((first, last))
+      case s: String if s contains "@" => None // skip "username@pm.sprint.com" <username@pm.sprint.com>
+      case name: String => Some((name, defaultLastName))
     }
 
     // capitalize names
