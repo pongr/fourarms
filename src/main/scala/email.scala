@@ -28,9 +28,9 @@ import com.pongr.fourarms.util.FromMethods
 object EmailAddress extends FromMethods {
 
   def apply(addr: Address): EmailAddress = if (addr != null) {
-    val names = getFromName(addr.toString)
+    val (firstName, lastName) = getFromName(addr.asInstanceOf[InternetAddress])
     val a = new MailAddress(new InternetAddress(addr.toString))
-    EmailAddress(a.getLocalPart, a.getDomain, names.map(_._1), names.map(_._2))
+    EmailAddress(a.getLocalPart, a.getDomain, firstName, lastName)
   } else EmailAddress("", "", None, None)
 
 }
@@ -56,9 +56,9 @@ case class EmailAddress(
  * Representation of the message's part.
  * @param contentType "Content-Type" header field.
  * @param data Array[Byte] representation of this part's content.
- * @param fileName "filename" parameter from the "Content-Disposition" header field of this part.
+ * @param fileName Represents the "filename" part of "Content-Disposition" header field.
  * @param description "Content-Description" header field.
- * @param disposition "Content-Disposition" header field. 
+ * @param disposition Represents the "disposition" part of "Content-Disposition" header field. 
  * @param headers All headers associated with this part.
  */
 case class EmailPart(
@@ -94,10 +94,10 @@ case class Email(
 object Email extends FromMethods {
 
   def apply(m: Mail): Email = {
-    val names = getFromName(m)
+    val (firstName, lastName) = getFromName(m)
     val addr = new MailAddress(getFromEmail(m))
 
-    Email(EmailAddress(addr.getLocalPart, addr.getDomain, names.map(_._1), names.map(_._2)),
+    Email(EmailAddress(addr.getLocalPart, addr.getDomain, firstName, lastName),
           m.getMessage.getAllRecipients.map(EmailAddress(_)).toList,
           m.getMessage.getSubject,
           getEmailParts(m.getMessage),
@@ -133,7 +133,7 @@ object Email extends FromMethods {
     else {
       val tmp = enum.nextElement.asInstanceOf[Header]
       val newHeader = headers.filter(_._1 == tmp.getName).headOption match {
-        case Some((dummy, existing)) => Map(tmp.getName -> (tmp.getValue +: existing))
+        case Some((_, existing)) => Map(tmp.getName -> (tmp.getValue +: existing))
         case _ => Map(tmp.getName -> List(tmp.getValue))
       }
 

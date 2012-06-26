@@ -106,7 +106,7 @@ class SenderIsInLookup extends GenericMatcher with FromMethods with ElementsFrom
 class SenderDomainIsInLookup extends GenericMatcher with FromMethods with ElementsFromLookup {
 
   override def `match`(mail: Mail): JCollection[_] = {
-    getDomain(mail) match {
+    getFromDomain(mail) match {
       case Some(domain) if (exist_?(domain)) =>
         log("SenderDomain %s matched!".format(domain))
         mail.getRecipients 
