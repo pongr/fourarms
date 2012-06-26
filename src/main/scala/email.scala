@@ -27,12 +27,6 @@ import com.pongr.fourarms.util.FromMethods
 
 object EmailAddress extends FromMethods {
 
-  def apply(m: Mail): EmailAddress = {
-    val names = getFromName(m)
-    val addr = new MailAddress(getFromEmail(m))
-    EmailAddress(addr.getLocalPart, addr.getDomain, names.map(_._1), names.map(_._2))
-  }
-
   def apply(addr: Address): EmailAddress = if (addr != null) {
     val names = getFromName(addr.toString)
     val a = new MailAddress(new InternetAddress(addr.toString))
@@ -70,7 +64,7 @@ case class EmailAddress(
 case class EmailPart(
   contentType: String,        
   data: Array[Byte],          
-  fileName: Option[String],   // TODO just use headers instead of fileName, description & disposition fields?
+  fileName: Option[String],
   description: Option[String],
   disposition: Option[String],
   headers: Map[String, Seq[String]]
@@ -97,11 +91,13 @@ case class Email(
 
 }
 
-object Email {
+object Email extends FromMethods {
 
   def apply(m: Mail): Email = {
+    val names = getFromName(m)
+    val addr = new MailAddress(getFromEmail(m))
 
-    Email(EmailAddress(m),
+    Email(EmailAddress(addr.getLocalPart, addr.getDomain, names.map(_._1), names.map(_._2)),
           m.getMessage.getAllRecipients.map(EmailAddress(_)).toList,
           m.getMessage.getSubject,
           getEmailParts(m.getMessage),
