@@ -13,9 +13,51 @@ class EmailSpec extends Specification with Helper {
 
   "EmailSpec test" should {
 
-    "Create Email from mail" in {
+    "Create Email with image attached" in {
 
-      val mail = Email(mail1)
+      val mail = Email(createMail("/MimeMessage-plain-jpeg"))
+
+      mail.from must_== EmailAddress("zcox", "pongr.com", Some("Zach"),Some("Cox"))
+
+      mail.to must_== List(EmailAddress("jpeg", "fourarms.pongrdev.com", None, None))
+
+      mail.subject must_== "jpeg"
+
+      mail.parts.size must_== 2
+
+      mail.headers.size must_== 10
+      mail.headers.get("MIME-Version").get must_== List("1.0")
+      mail.headers.get("Content-Type").get must_== List("multipart/mixed; boundary=14dae934057561fd2c04c3163b93")
+      mail.headers.get("Received").get.size must_== 5
+      mail.headers.get("Date").get must_== List("Fri, 22 Jun 2012 16:22:39 -0500")
+      mail.headers.get("From").get must_== List("Zach Cox <zcox@pongr.com>")
+      
+      mail.parts(0).contentType             must_== "text/plain; charset=ISO-8859-1"
+      mail.parts(0).headers.size            must_== 2
+      mail.parts(0).headers.get("Content-Transfer-Encoding").get must_== List("quoted-printable")
+      mail.parts(0).fileName                must_== None
+      mail.parts(0).description             must_== None
+      mail.parts(0).disposition             must_== None
+      (new String(mail.parts(0).data)).trim must_== "This�email is plaintext with a jpeg attached."
+
+      
+      /*mail.parts(1).contentType  must_== "image/jpeg; name=\"07d02602-5aea-49a1-a12d-c5a59936290fw425.jpg\""*/
+      mail.parts(1).fileName     must_== Some("07d02602-5aea-49a1-a12d-c5a59936290fw425.jpg")
+      mail.parts(1).description  must_== None
+      mail.parts(1).disposition  must_== Some("attachment")
+
+      mail.parts(1).headers.size must_== 4
+      /*mail.parts(1).headers.get("Content-Disposition").get must_== List("attachment;\n filename=\"07d02602-5aea-49a1-a12d-c5a59936290fw425.jpg\"")*/
+      mail.parts(1).headers.get("Content-Transfer-Encoding").get must_== List("base64")
+      mail.parts(1).headers.get("X-Attachment-Id").get must_== List("f_h3rrmx7q0")
+      IOUtils.contentEquals(new ByteArrayInputStream(mail.parts(1).data), getClass.getResourceAsStream("/07d02602-5aea-49a1-a12d-c5a59936290fw425.jpg")) must_== true
+
+    }
+
+
+    "Create Email with image attached and multiple recipients" in {
+
+      val mail = Email(createMail("/MimeMessage-plain-jpeg-multipleRecipient"))
 
       mail.from must_== EmailAddress("byamba", "pongr.com", Some("Byamba"),Some("Tumurkhuu"))
 
@@ -59,6 +101,7 @@ class EmailSpec extends Specification with Helper {
       IOUtils.contentEquals(new ByteArrayInputStream(mail.parts(2).data), getClass.getResourceAsStream("/pepsi.jpg")) must_== true
 
     }
+
 
   }
 
