@@ -71,7 +71,7 @@ case class EmailPart(
 )
 
 /**
- * 
+ * Contains useful information extracted from MimeMessage.
  */
 case class Email(
   from: EmailAddress,
