@@ -31,6 +31,11 @@ class FromMethodsSpec extends Specification with FromMethods with Helper {
       getFromName(mail2) must_== (Some("Zach"), Some("Cox"))
 
       getFromName(new InternetAddress("First Last <email@host.com>")) must_== (Some("First"), Some("Last"))
+      getFromName(new InternetAddress("FIRST LAST <email@host.com>")) must_== (Some("First"), Some("Last"))
+      getFromName(new InternetAddress("first last <email@host.com>")) must_== (Some("First"), Some("Last"))
+      getFromName(new InternetAddress("\"First Last\" <email@host.com>")) must_== (Some("First"), Some("Last"))
+      getFromName(new InternetAddress("\"Last, First\" <email@host.com>")) must_== (Some("First"), Some("Last"))
+      getFromName(new InternetAddress("First Middle Last <email@host.com>")) must_== (Some("First"), Some("Middle last"))
       getFromName(new InternetAddress("First <email@host.com>")) must_== (Some("First"), None)
       getFromName(new InternetAddress("email@host.com", "Last, First")) must_== (Some("First"), Some("Last"))
     }
