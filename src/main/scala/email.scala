@@ -17,8 +17,7 @@
 package com.pongr.fourarms.mail
 
 import org.apache.mailet._
-import javax.mail.Multipart
-import javax.mail.Header
+import javax.mail.{ Multipart, Header, Address }
 import javax.mail.internet._
 import javax.mail.{ Part, Multipart }
 import scala.collection.JavaConversions._
@@ -28,12 +27,16 @@ import com.pongr.fourarms.util.FromMethods
 
 object EmailAddress extends FromMethods {
 
-  def apply(s: String): EmailAddress = EmailAddress(new MailAddress(s))
-
-  // TODO: 
-  def apply(addr: MailAddress): EmailAddress = if (addr != null) {
-    val names = getFromName(addr.getLocalPart)
+  def apply(m: Mail): EmailAddress = {
+    val names = getFromName(m)
+    val addr = new MailAddress(getFromEmail(m))
     EmailAddress(addr.getLocalPart, addr.getDomain, names.map(_._1), names.map(_._2))
+  }
+
+  def apply(addr: Address): EmailAddress = if (addr != null) {
+    val names = getFromName(addr.toString)
+    val a = new MailAddress(new InternetAddress(addr.toString))
+    EmailAddress(a.getLocalPart, a.getDomain, names.map(_._1), names.map(_._2))
   } else EmailAddress("", "", None, None)
 
 }
@@ -44,7 +47,7 @@ object EmailAddress extends FromMethods {
  * @param localPart username from "username@host.com".
  * @param domain domain without "@". For example: pongr.com
  * @param firstName First name
- * @param lastName  Last name
+ * @param lastName Last name
  */
 case class EmailAddress(
   localPart: String,
@@ -97,16 +100,14 @@ case class Email(
 object Email {
 
   def apply(m: Mail): Email = {
-    val recipients = if (m.getRecipients == null) Nil 
-                     else m.getRecipients.map { a => EmailAddress(a.asInstanceOf[MailAddress]) }
 
-    Email(EmailAddress(m.getSender),
-                       recipients.toList,
-                       m.getMessage.getSubject,
-                       getEmailParts(m.getMessage),
-                       getHeaders(m.getMessage.getAllHeaders, Map()),
-                       m.getRemoteHost,
-                       m.getRemoteAddr)
+    Email(EmailAddress(m),
+          m.getMessage.getAllRecipients.map(EmailAddress(_)).toList,
+          m.getMessage.getSubject,
+          getEmailParts(m.getMessage),
+          getHeaders(m.getMessage.getAllHeaders, Map()),
+          m.getRemoteHost,
+          m.getRemoteAddr)
   }
 
   def getEmailParts(part: Part): Seq[EmailPart] = try {
