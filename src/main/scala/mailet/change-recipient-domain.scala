@@ -41,15 +41,19 @@ class ChangeRecipientDomain extends PongrMailet {
     }
     mail.setRecipients(rs2)
 
-    /*
     for (recipientType <- List(RecipientType.TO, RecipientType.CC, RecipientType.BCC)) {
-      val newAddrs: Array[javax.mail.Address] = mail.getMessage.getRecipients(recipientType).map { addr =>
-        new InternetAddress(addr.toString.replace(oldDomain, newDomain))
+      val recipients = mail.getMessage.getRecipients(recipientType)
+
+      if (recipients != null) {
+        val newAddrs: Array[javax.mail.Address] = recipients.map { tmp =>
+          val addr = tmp.asInstanceOf[InternetAddress]
+          if (addr.getAddress.endsWith(oldDomain))
+            new InternetAddress(addr.getAddress.replace(oldDomain, newDomain), addr.getPersonal)
+          else 
+            tmp
+        }
+        mail.getMessage.setRecipients(recipientType, newAddrs)
       }
-      mail.getMessage.setRecipients(recipientType, newAddrs)
-    } 
-    */
-
+    }
   }
-
 }

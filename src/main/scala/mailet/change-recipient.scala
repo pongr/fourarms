@@ -35,23 +35,28 @@ class ChangeRecipient extends PongrMailet {
     val rs2 = rs map { r =>
       if (oldRecipient == r.toString.trim.toLowerCase) {
         log("Changed " + r + " to " + newRecipient)
-          new MailAddress(newRecipient)
+        new MailAddress(newRecipient)
       } else
         r
     }
     mail.setRecipients(rs2)
 
-    /*
     for (recipientType <- List(RecipientType.TO, RecipientType.CC, RecipientType.BCC)) {
-      val newAddrs = mail.getMessage.getRecipients(recipientType).map { addr =>
-        if (oldRecipient == addr.toString.trim.toLowerCase)
-          new InternetAddress(newRecipient)
-        else
-          addr
+      val recipients= mail.getMessage.getRecipients(recipientType)
+
+      if (recipients != null) {
+        val newAddrs = recipients.map { tmp =>
+          val addr = tmp.asInstanceOf[InternetAddress]
+          if (addr.getAddress == oldRecipient)
+            new InternetAddress(newRecipient, addr.getPersonal)
+          else 
+            tmp
+        }
+
+        mail.getMessage.setRecipients(recipientType, newAddrs)
       }
-      mail.getMessage.setRecipients(recipientType, newAddrs)
+
     }
-    */
 
   }
 }

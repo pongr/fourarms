@@ -27,7 +27,9 @@ trait PongrMailet extends GenericMailet {
   override def getMailetInfo() = "Created by Pongr"
   override def init() { log(getMailetName() + " starting up...") }
   def log(mail: Mail) { log(getMailetName() + " processing " + mail.getName + " from " + mail.getSender + " to " + mail.getRecipients) }
-  override def log(msg: String) { super.log(getMailetName + " " + msg) }
+  override def log(msg: String) { 
+    try { super.log(getMailetName + " " + msg) } catch { case e => }
+  }
 
 
   def getTimeUnit(t: String) = t match {
