@@ -41,13 +41,13 @@ class EmailSpec extends Specification with Helper {
       (new String(mail.parts(0).data)).trim must_== "This�email is plaintext with a jpeg attached."
 
       
-      /*mail.parts(1).contentType  must_== "image/jpeg; name=\"07d02602-5aea-49a1-a12d-c5a59936290fw425.jpg\""*/
+      mail.parts(1).contentType.contains("image/jpeg;") must_== true
+      mail.parts(1).contentType.contains("name=\"07d02602-5aea-49a1-a12d-c5a59936290fw425.jpg\"") must_== true
       mail.parts(1).fileName     must_== Some("07d02602-5aea-49a1-a12d-c5a59936290fw425.jpg")
       mail.parts(1).description  must_== None
       mail.parts(1).disposition  must_== Some("attachment")
 
       mail.parts(1).headers.size must_== 4
-      /*mail.parts(1).headers.get("Content-Disposition").get must_== List("attachment;\n filename=\"07d02602-5aea-49a1-a12d-c5a59936290fw425.jpg\"")*/
       mail.parts(1).headers.get("Content-Transfer-Encoding").get must_== List("base64")
       mail.parts(1).headers.get("X-Attachment-Id").get must_== List("f_h3rrmx7q0")
       IOUtils.contentEquals(new ByteArrayInputStream(mail.parts(1).data), getClass.getResourceAsStream("/07d02602-5aea-49a1-a12d-c5a59936290fw425.jpg")) must_== true
