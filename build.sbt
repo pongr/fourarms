@@ -2,7 +2,7 @@ name := "fourarms"
 
 organization := "com.pongr"
 
-version := "0.2-SNAPSHOT"
+version := "0.3-SNAPSHOT"
 
 scalaVersion := "2.9.1"
 
@@ -11,6 +11,8 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
+  "org.clapper" %% "grizzled-slf4j" % "0.6.9",
+  "ch.qos.logback" % "logback-classic" % "1.0.6",
   "org.apache.james" % "apache-mailet-base" % "1.1",
   "commons-lang" % "commons-lang" % "2.5",
   "commons-io" % "commons-io" % "1.3.2",

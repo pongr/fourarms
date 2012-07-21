@@ -18,7 +18,7 @@ package com.pongr.fourarms.serializer
 
 import com.pongr.fourarms.mail._
 import org.apache.mailet._
-
+import grizzled.slf4j.Logging
 import java.io._
 import javax.mail.internet._
 
@@ -40,11 +40,12 @@ trait Deserializer {
 /** 
   * Default implementation of Serializer and Deserializer traits.
   */
-class DefaultSerializer extends Serializer with Deserializer {
+class DefaultSerializer extends Serializer with Deserializer with Logging {
   def serialize(mail: Email): Array[Byte] = {
     val bos = new ByteArrayOutputStream
     val out = new ObjectOutputStream(bos)
 
+    info("Serializing email object. Subject: " + mail.subject)
     out.writeObject(mail)
 
     out.close
