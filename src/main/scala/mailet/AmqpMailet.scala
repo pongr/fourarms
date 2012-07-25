@@ -24,7 +24,6 @@ import org.apache.commons.lang.StringUtils.isBlank
 import com.pongr.fourarms.util._
 import com.pongr.fourarms.serializer._
 
-
 /**
  * AMQP mailet serializes incoming emails and sends to AMQP server. 
  */
@@ -56,8 +55,11 @@ class AmqpMailet extends PongrMailet with FromMethods {
   /** AMQP exchange type */
   lazy val exchangeType = getInitParameter("exchangeType", "direct")
 
-  /** AMQP boolean value to define wheter to set email state to GHOST or not after it's been sent. */
+  /** AMQP boolean value to define whether to set email state to GHOST or not after it's been sent. */
   lazy val setGhostState_? = getInitParameter("ghost", true)
+
+  /** Defines initial value of geometric back-off that attempts to reconnect to AMQP server when an exception happens. */
+  lazy val initialDelay = getInitParameter("initialDelay", "10000").toLong
 
   /** 
     * Serializer. If it's provided by the parameter it creates an instance of that using Reflection.
@@ -70,20 +72,50 @@ class AmqpMailet extends PongrMailet with FromMethods {
                           
   /** URI, where AMQP credentials will be validated. */
   lazy val uri = "amqp://%s:%s@%s:%s/%s" format (username, password, host, port, vhost)
-  var conn : Connection = _
+  var connection : Connection = _
+
+  def connect(delay: Long): Connection = {
+    try {
+      log("Opening AMQP Connection to %s..." format uri)
+      val factory = new ConnectionFactory()
+      factory.setUri(uri)
+      val conn = factory.newConnection()
+      log("Opened AMQP Connection to %s" format uri)
+    
+      val channel = conn.createChannel()
+      channel.exchangeDeclare(exchange, exchangeType, true)
+      log("Declared durable %s exchange %s" format (exchangeType, exchange))
+      channel.close()
+      conn
+    } 
+    catch {
+      case e: Exception =>
+        log("Error creating connection for AMQP Mailet", e)
+        log("Waiting for %s milliseconds ..." format delay)
+        Thread.sleep(delay)
+        connect(delay * 2)
+    }
+  }
+
+  def send (bytes: Array[Byte], delay: Long) {
+    try {
+      val channel = connection.createChannel()
+      channel.basicPublish(exchange, routingKey, null, bytes)
+      channel.close()
+    }
+    catch {
+      case e: Exception =>
+        log("Error creating connection for AMQP Mailet", e)
+        log("Waiting for %s milliseconds ..." format delay)
+        Thread.sleep(delay)
+        connection = connect(delay * 2)
+    }
+  }
+
 
   /** Creates amqp connection and declares channel */
   override def init() {
-    log("Opening AMQP Connection to %s..." format uri)
-    val factory = new ConnectionFactory()
-    factory.setUri(uri)
-    conn = factory.newConnection()
-    log("Opened AMQP Connection to %s" format uri)
-    
-    val channel = conn.createChannel()
-    channel.exchangeDeclare(exchange, exchangeType, true)
-    log("Declared durable %s exchange %s" format (exchangeType, exchange))
-    channel.close()
+    connection = connect(initialDelay)
   }
 
   /** Serializes email and send to AMQP server */
@@ -92,18 +124,8 @@ class AmqpMailet extends PongrMailet with FromMethods {
     // serialize 
     val bytes = serializer.serialize(mail)
     
-    /*import java.io._
-    import org.apache.commons.io._
-    val file = File.createTempFile("serializedMail", "")
-    FileUtils.writeByteArrayToFile(file, bytes)
-    log("Saved bytes to %s" format file)*/
-
-    val channel = conn.createChannel()
-
     log("Sending (From: %s, Name: %s) to AMQP(VHost: %s, exchange: %s)." format (getFromEmail(mail), mail.getName, vhost, exchange))
-    channel.basicPublish(exchange, routingKey, null, bytes)
-
-    channel.close()
+    send (bytes, initialDelay)
 
     if (setGhostState_?)
       mail.setState(Mail.GHOST)
@@ -112,7 +134,7 @@ class AmqpMailet extends PongrMailet with FromMethods {
 
   /** Closes AMQP connection */
   override def destroy() {
-    conn.close()
+    connection.close()
     log("Closed AMQP Connection to %s" format uri)
   }
 
