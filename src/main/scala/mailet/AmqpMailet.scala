@@ -92,25 +92,25 @@ class AmqpMailet extends PongrMailet with FromMethods {
     catch {
       case e: Exception =>
         log("Error creating connection for AMQP Mailet", e)
-        log("Waiting for %s milliseconds ..." format delay)
+        log("Waiting for %s milliseconds to reconnect..." format delay)
         Thread.sleep(delay)
         connect(delay * 2)
     }
   }
 
   /** sends the data to AMQP server */
-  def send (bytes: Array[Byte], delay: Long) {
+  def send (conn: Connection, bytes: Array[Byte], delay: Long) {
     try {
-      val channel = connection.createChannel()
+      val channel = conn.createChannel()
       channel.basicPublish(exchange, routingKey, null, bytes)
       channel.close()
     }
     catch {
       case e: Exception =>
-        log("Error creating connection for AMQP Mailet", e)
-        log("Waiting for %s milliseconds ..." format delay)
+        log("Error sending data to AMPQ server", e)
+        log("Waiting for %s milliseconds to reconnect..." format delay)
         Thread.sleep(delay)
-        connection = connect(delay * 2)
+        send(connect(delay), bytes, delay * 2)
     }
   }
 
@@ -126,7 +126,7 @@ class AmqpMailet extends PongrMailet with FromMethods {
     val bytes = serializer.serialize(mail)
     
     log("Sending (From: %s, Name: %s) to AMQP(VHost: %s, exchange: %s)." format (getFromEmail(mail), mail.getName, vhost, exchange))
-    send (bytes, initialDelay)
+    send (connection, bytes, initialDelay)
 
     if (setGhostState_?)
       mail.setState(Mail.GHOST)
