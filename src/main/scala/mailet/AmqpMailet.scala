@@ -74,6 +74,7 @@ class AmqpMailet extends PongrMailet with FromMethods {
   lazy val uri = "amqp://%s:%s@%s:%s/%s" format (username, password, host, port, vhost)
   var connection : Connection = _
 
+  /** Creates amqp connection and declares channel */
   def connect(delay: Long): Connection = {
     try {
       log("Opening AMQP Connection to %s..." format uri)
@@ -97,6 +98,7 @@ class AmqpMailet extends PongrMailet with FromMethods {
     }
   }
 
+  /** sends the data to AMQP server */
   def send (bytes: Array[Byte], delay: Long) {
     try {
       val channel = connection.createChannel()
@@ -113,7 +115,6 @@ class AmqpMailet extends PongrMailet with FromMethods {
   }
 
 
-  /** Creates amqp connection and declares channel */
   override def init() {
     connection = connect(initialDelay)
   }
