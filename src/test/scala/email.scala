@@ -22,6 +22,8 @@ class EmailSpec extends Specification with Helper {
       mail.to must_== List(EmailAddress("plaintext", "fourarms.pongrdev.com", None, None))
 
       mail.subject must_== "Plaintext"
+      mail.bodyPlain.get.trim must_== "This is a simple plaintext email."
+      mail.bodyHtml must_== None
 
       mail.parts.size must_== 1
 
@@ -50,6 +52,8 @@ class EmailSpec extends Specification with Helper {
       mail.to must_== List(EmailAddress("html", "fourarms.pongrdev.com", None, None))
 
       mail.subject must_== "HTML"
+      mail.bodyPlain.get.trim must_== "This is a *rich* *email.*"
+      mail.bodyHtml.get.trim  must_== """<font color="#ff0000">This</font> is a <b>rich</b> <i>email.</i>"""
 
       mail.parts.size must_== 2
 
@@ -85,6 +89,8 @@ class EmailSpec extends Specification with Helper {
       mail.to must_== List(EmailAddress("jpeg", "fourarms.pongrdev.com", None, None))
 
       mail.subject must_== "jpeg"
+      mail.bodyPlain.get.trim must_== "This�email is plaintext with a jpeg attached."
+      mail.bodyHtml           must_== None
 
       mail.parts.size must_== 2
 

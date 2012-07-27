@@ -90,6 +90,24 @@ case class Email(
    */
   private val email = EmailPart("", Array(), None, None, None, Map())
 
+  def getText(mimeType: String) = {
+    parts.filter(p => isMimeEqual(p.contentType, mimeType)).headOption match {
+      case Some(p) => Some(new String(p.data))
+      case _ => None
+    }
+  }
+
+  def bodyPlain: Option[String] = getText("text/plain")
+  def bodyHtml : Option[String] = getText("text/html")
+
+  def isMimeEqual(mime1: String, mime2: String): Boolean = {
+    try {
+      val c = new ContentType(mime1)
+      c.`match`(mime2)
+    } catch { case e =>
+      mime1.equalsIgnoreCase(mime2)
+    }
+  }
 }
 
 object Email extends FromMethods {
