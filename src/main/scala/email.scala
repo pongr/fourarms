@@ -78,8 +78,6 @@ case class Email(
   from: EmailAddress,
   to: Seq[EmailAddress],
   subject: String,
-  bodyPlain: Option[String],
-  bodyHtml:  Option[String],
   parts: Seq[EmailPart],
   headers: Map[String, Seq[String]],
   remoteHost: String,
@@ -104,8 +102,6 @@ object Email extends FromMethods {
     Email(EmailAddress(addr.getLocalPart, addr.getDomain, firstName, lastName),
           message.getAllRecipients.map(EmailAddress(_)).toList,
           message.getSubject,
-          getText(message, "text/plain"),
-          getText(message, "text/html"),
           getEmailParts(message),
           getHeaders(message.getAllHeaders, Map()),
           m.getRemoteHost,
@@ -146,22 +142,5 @@ object Email extends FromMethods {
       getHeaders(enum, headers ++ newHeader)
     }
   }
-
-  def getText(p: Part, mime: String): Option[String] = try {
-    if (p.isMimeType("multipart/*")) {
-      val multipart = p.getContent.asInstanceOf[Multipart]
-      var o: Option[String] = None
-      for (i <- 0 until multipart.getCount if !o.isDefined)
-        o = getText(multipart.getBodyPart(i), mime)
-      o
-    } else if (p.isMimeType(mime)) {
-      asOption(p.getContent.toString)
-    } else
-      None
-  } catch {
-    case e: Exception => None
-  }
-
-  def asOption(s: String): Option[String] = if (isBlank(s)) None else Some(s.trim)
 
 }
