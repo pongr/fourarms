@@ -110,7 +110,8 @@ class AmqpMailet extends PongrMailet with FromMethods {
         log("Error sending data to AMPQ server", e)
         log("Waiting for %s milliseconds to reconnect..." format delay)
         Thread.sleep(delay)
-        send(connect(delay), bytes, delay * 2)
+        connection = connect(delay)
+        send(connection, bytes, delay * 2)
     }
   }
 
