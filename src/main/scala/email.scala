@@ -74,6 +74,7 @@ case class EmailPart(
 /**
  * Contains useful information extracted from MimeMessage.
  */
+@SerialVersionUID(159423l)
 case class Email(
   from: EmailAddress,
   to: Seq[EmailAddress],
