@@ -2,8 +2,6 @@ name := "fourarms"
 
 organization := "com.pongr"
 
-version := "0.3-SNAPSHOT"
-
 scalaVersion := "2.9.1"
 
 resolvers ++= Seq(
@@ -24,6 +22,8 @@ libraryDependencies ++= Seq(
   "com.yammer.metrics" % "metrics-core" % "2.1.2",
   "com.yammer.metrics" % "metrics-graphite" % "2.1.2"
 )
+
+seq(sbtrelease.Release.releaseSettings: _*)
 
 //http://www.scala-sbt.org/using_sonatype.html
 //https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
