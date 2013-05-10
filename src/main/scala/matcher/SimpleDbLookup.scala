@@ -16,6 +16,7 @@
 
 package com.pongr.fourarms.matcher
 
+import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.simpledb.AmazonSimpleDBClient
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.simpledb.AmazonSimpleDB
@@ -23,6 +24,7 @@ import com.amazonaws.services.simpledb.model.{SelectRequest, Item}
 
 import java.util.concurrent.TimeUnit
 import com.yammer.metrics.Metrics
+import grizzled.slf4j.Logging
 
 import scala.collection.JavaConversions._
 
@@ -30,7 +32,7 @@ import scala.collection.JavaConversions._
  * Extend this trait provide accessKeyId, SelectRequest, domain and attribute 
  * method implementations to have SimpleDB based lookup.
  */
-trait SimpleDbLookup extends Lookup {
+trait SimpleDbLookup extends Lookup with Logging {
 
   // SimpleDB credentials
   def accessKeyId: String
@@ -52,14 +54,18 @@ trait SimpleDbLookup extends Lookup {
     val timer = Metrics.newTimer(this.getClass, timerName, durationUnit, rateUnit)
     val context = timer.time()
 
+    val q = query(e)
     try {
-      val selectRequest = new SelectRequest(query(e))
+      val selectRequest = new SelectRequest(q)
       sdb.select(selectRequest).getItems.headOption map { item =>
         // Item = {Name: Domain, Attributes: [{Name: Count, Value: 1, }], }
         item.getAttributes.headOption.map { _.getValue != "0" } getOrElse false
       } getOrElse false
-    }
-    finally {
+    } catch {
+      case ex: AmazonServiceException => 
+        error("Exception while checking existence of %s using query: %s" format (e, q), ex)
+        false
+    } finally {
       context.stop()
     }
   }
