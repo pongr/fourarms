@@ -119,7 +119,7 @@ object Email extends FromMethods {
     val message = m.getMessage
 
     Email(EmailAddress(addr.getLocalPart, addr.getDomain, firstName, lastName),
-          message.getAllRecipients.map(EmailAddress(_)).toList,
+          Option(message.getAllRecipients).map(_.map(EmailAddress(_))).flatten.toList,
           message.getSubject,
           getEmailParts(message),
           getHeaders(message.getAllHeaders, Map()),
