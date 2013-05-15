@@ -31,8 +31,9 @@ trait FromMethods {
     case _ => Option(mail.getSender).map(_.toString.toLowerCase).getOrElse("")
   }
 
-  def getFromAddress(mail: Mail): Option[InternetAddress] = 
-    mail.getMessage.getFrom.headOption.map(_.asInstanceOf[InternetAddress])
+  def getFromAddress(mail: Mail): Option[InternetAddress] =
+    Option(mail.getMessage.getFrom).flatMap(_.headOption.map(_.asInstanceOf[InternetAddress]))
+    
 
   def getFromDomain(mail: Mail): Option[String] = {
     val sender = getFromEmail(mail)
