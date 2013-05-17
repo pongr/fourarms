@@ -30,9 +30,11 @@ object EmailAddress extends FromMethods {
 
   def apply(addr: Address): EmailAddress = if (addr != null) {
     val (firstName, lastName) = getFromName(addr.asInstanceOf[InternetAddress])
-    val a = new MailAddress(new InternetAddress(addr.toString))
+    val a = new MailAddress(new InternetAddress(fixRecipientAddress(addr.toString)))
     EmailAddress(a.getLocalPart, a.getDomain, firstName, lastName)
   } else EmailAddress("", "", None, None)
+
+  def fixRecipientAddress(address: String): String = """(\.)(?=>|$)""".r.replaceAllIn(address, "")
 
 }
 
